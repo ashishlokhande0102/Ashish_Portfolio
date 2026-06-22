@@ -1038,16 +1038,39 @@ function deleteExp(id){
 // CONTACT FORM
 // ════════════════════════════════════════
 function submitContact(){
-  const name=document.getElementById('cfName').value.trim();
-  const email=document.getElementById('cfEmail').value.trim();
-  const msg=document.getElementById('cfMsg').value.trim();
-  const el=document.getElementById('formMsg');
-  if(!name||!email||!msg){el.textContent='Please fill all fields.';el.style.color='var(--danger)';el.style.display='block';return;}
-  trackMsg(name,email,msg);
-  el.textContent=`✅ Thanks ${name}! Your message has been saved. I'll get back to you soon.`;
-  el.style.color='var(--success)';el.style.display='block';
-  ['cfName','cfEmail','cfMsg'].forEach(id=>document.getElementById(id).value='');
+const name=document.getElementById('cfName').value.trim();
+const email=document.getElementById('cfEmail').value.trim();
+const msg=document.getElementById('cfMsg').value.trim();
+const el=document.getElementById('formMsg');
+
+if(!name||!email||!msg){
+el.textContent='Please fill all fields.';
+el.style.color='var(--danger)';
+el.style.display='block';
+return;
 }
+
+trackMsg(name,email,msg);
+
+el.textContent=`✅ Thanks ${name}! Your message has been submitted successfully. I'll get back to you soon.`;
+el.style.color='var(--success)';
+el.style.display='block';
+
+const subject = encodeURIComponent('Portfolio Contact from ' + name);
+const body = encodeURIComponent(
+'Name: ' + name + '\n' +
+'Email: ' + email + '\n\n' +
+'Message:\n' + msg
+);
+
+setTimeout(() => {
+window.location.href =
+`mailto:ashishlokhande0102@gmail.com?subject=${subject}&body=${body}`;
+}, 1000);
+
+['cfName','cfEmail','cfMsg'].forEach(id=>document.getElementById(id).value='');
+}
+
 
 // ════════════════════════════════════════
 // RESUME
