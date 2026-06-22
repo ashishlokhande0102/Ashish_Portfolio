@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ashish Lokhande – MIS & Data Analyst</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root{
+  --ink:#0D1117;--ink2:#3A3F4B;--mist:#F5F7FA;--border:#E2E6ED;
+  --accent:#2563EB;--accent2:#7C3AED;--teal:#0EA5E9;
+  --success:#10B981;--warn:#F59E0B;--danger:#EF4444;--white:#FFFFFF;
+  --radius:14px;--shadow:0 2px 16px rgba(13,17,23,.07);
+  --shadow-lg:0 8px 40px rgba(13,17,23,.13);
+  --font:'Plus Jakarta Sans',sans-serif;--mono:'DM Mono',monospace;--nav-h:64px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{font-family:var(--font);cursor:pointer;border:none;background:none}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:900;display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+.nav-brand{font-weight:800;font-size:1.1rem;letter-spacing:-.02em}
+.nav-brand span{color:var(--accent)}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links a{padding:6px 13px;border-radius:8px;font-size:.875rem;font-weight:500;color:var(--ink2);transition:.15s}
+.nav-links a:hover,.nav-links a.active{background:var(--accent);color:#fff}
+#ownerBtn{padding:6px 14px;border-radius:8px;font-size:.875rem;font-weight:600;background:transparent;border:1.5px solid var(--border);color:var(--ink2);transition:.15s}
+#ownerBtn:hover{border-color:var(--accent);color:var(--accent)}
+#ownerBtn.active-owner{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ham{display:none;flex-direction:column;gap:5px;padding:8px;cursor:pointer}
+.ham span{width:22px;height:2px;background:var(--ink);border-radius:2px}
+
+/* ── LAYOUT ── */
+main{padding-top:var(--nav-h)}
+section{padding:80px 32px;max-width:1100px;margin:0 auto}
+.section-label{font-size:.73rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;font-family:var(--mono)}
+h2.section-title{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;letter-spacing:-.03em;line-height:1.15;margin-bottom:40px}
+.divider{height:1px;background:var(--border);max-width:1100px;margin:0 auto}
+
+/* ── HERO ── */
+#home{padding:96px 32px 72px;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:56px;align-items:center}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;font-size:.77rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:999px;margin-bottom:24px;font-family:var(--mono);cursor:pointer;transition:.2s;user-select:none}
+.hero-tag.open-to-work{background:#ECFDF5;color:#059669}
+.hero-tag.working{background:#FFFBEB;color:#D97706}
+.hero-tag.dot{width:6px;height:6px;border-radius:50%;display:inline-block;animation:blink 1.4s ease-in-out infinite}
+.dot-green{background:var(--success)}
+.dot-yellow{background:var(--warn)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.hero-name{font-size:clamp(2.4rem,6vw,3.8rem);font-weight:800;letter-spacing:-.04em;line-height:1.08;margin-bottom:16px}
+.hero-name .accent{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-subtitle{font-size:1rem;color:var(--ink2);font-weight:500;margin-bottom:16px}
+.hero-intro{font-size:.93rem;color:var(--ink2);line-height:1.8;max-width:520px;margin-bottom:32px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:10px;font-weight:600;font-size:.88rem;transition:.18s;cursor:pointer;border:none}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.32)}
+.btn-primary:hover{background:#1d4ed8;transform:translateY(-1px)}
+.btn-outline{background:var(--white);color:var(--ink);border:1.5px solid var(--border)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:var(--danger);color:#fff}
+.hero-stats{display:flex;gap:32px;margin-top:32px}
+.stat-num{font-size:1.55rem;font-weight:800;letter-spacing:-.03em}
+.stat-lbl{font-size:.7rem;color:var(--ink2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono)}
+
+/* avatar */
+.hero-avatar-wrap{width:210px;height:210px;border-radius:22px;overflow:hidden;background:linear-gradient(135deg,#EFF6FF,#EDE9FE);display:flex;align-items:center;justify-content:center;font-size:72px;flex-shrink:0;box-shadow:var(--shadow-lg);position:relative;cursor:pointer}
+.hero-avatar-wrap img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.avatar-overlay{position:absolute;inset:0;background:rgba(37,99,235,.55);display:none;align-items:center;justify-content:center;color:#fff;font-size:.82rem;font-weight:700;border-radius:22px;text-align:center;flex-direction:column;gap:6px}
+.hero-avatar-wrap:hover .avatar-overlay{display:flex}
+.edit-mode .hero-avatar-wrap .avatar-overlay{display:flex}
+
+/* ── ABOUT ── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.about-text p{color:var(--ink2);line-height:1.82;margin-bottom:14px;font-size:.93rem}
+.cert-list{display:flex;flex-direction:column;gap:10px}
+.cert-item{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--white);border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow);position:relative}
+.cert-thumb{width:42px;height:42px;border-radius:8px;background:linear-gradient(135deg,#EFF6FF,#EDE9FE);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;cursor:pointer}
+.cert-thumb img{width:100%;height:100%;object-fit:cover}
+.cert-name{font-weight:600;font-size:.86rem;color:var(--ink)}
+.cert-org{font-size:.76rem;color:var(--ink2)}
+.cert-view-btn{margin-left:auto;padding:4px 10px;border-radius:6px;font-size:.72rem;font-weight:700;background:#EFF6FF;color:var(--accent);border:none;cursor:pointer;white-space:nowrap;flex-shrink:0}
+
+/* ── SKILLS ── */
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.skill-card{background:var(--white);border-radius:12px;border:1px solid var(--border);padding:18px;box-shadow:var(--shadow);transition:.2s;position:relative}
+.skill-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.skill-icon{font-size:26px;margin-bottom:8px}
+.skill-name{font-weight:700;font-size:.88rem;color:var(--ink);margin-bottom:6px}
+.skill-level-wrap{height:4px;border-radius:2px;background:var(--border)}
+.skill-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.skill-pct{font-size:.7rem;color:var(--ink2);font-family:var(--mono);margin-top:4px}
+.skill-del-btn{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:5px;background:var(--danger);color:#fff;font-size:12px;display:none;align-items:center;justify-content:center;border:none;cursor:pointer}
+.edit-mode .skill-del-btn{display:flex}
+
+/* ── PROJECTS ── */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
+.project-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow);transition:.22s;cursor:pointer;position:relative}
+.project-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--accent)}
+.project-img{height:160px;background:linear-gradient(135deg,#EFF6FF,#EDE9FE);display:flex;align-items:center;justify-content:center;font-size:52px;position:relative;overflow:hidden}
+.project-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.project-badge{position:absolute;top:10px;right:10px;padding:3px 9px;border-radius:999px;font-size:.68rem;font-weight:700;font-family:var(--mono);text-transform:uppercase;background:rgba(255,255,255,.92);color:var(--accent)}
+.project-body{padding:18px}
+.project-title{font-weight:700;font-size:.97rem;margin-bottom:7px}
+.project-desc{font-size:.83rem;color:var(--ink2);line-height:1.65;margin-bottom:12px}
+.project-tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{padding:3px 9px;border-radius:5px;font-size:.7rem;font-weight:700;font-family:var(--mono);background:#EFF6FF;color:var(--accent)}
+.proj-del-btn{position:absolute;top:8px;left:8px;width:26px;height:26px;border-radius:6px;background:var(--danger);color:#fff;font-size:13px;display:none;align-items:center;justify-content:center;z-index:10;border:none;cursor:pointer}
+.edit-mode .proj-del-btn{display:flex}
+
+/* ── EXPERIENCE ── */
+.exp-timeline{padding-left:28px;position:relative}
+.exp-timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;background:var(--border)}
+.exp-item{position:relative;margin-bottom:36px}
+.exp-item::before{content:'';position:absolute;left:-26px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--white);box-shadow:0 0 0 3px var(--accent)}
+.exp-role{font-weight:700;font-size:1rem}
+.exp-company{font-size:.88rem;color:var(--accent);font-weight:600;margin-bottom:3px}
+.exp-period{font-size:.76rem;color:var(--ink2);font-family:var(--mono);margin-bottom:10px}
+.exp-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.exp-list li{font-size:.86rem;color:var(--ink2);line-height:1.65;padding-left:16px;position:relative}
+.exp-list li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:.74rem}
+.exp-del-btn{position:absolute;top:0;right:0;padding:4px 10px;border-radius:6px;font-size:.72rem;background:var(--danger);color:#fff;display:none;border:none;cursor:pointer}
+.edit-mode .exp-del-btn{display:inline-flex}
+
+/* ── CONTACT ── */
+.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;align-items:start}
+.contact-links{display:flex;flex-direction:column;gap:14px}
+.contact-link-item{display:flex;align-items:center;gap:14px;padding:15px 18px;background:var(--white);border-radius:12px;border:1px solid var(--border);box-shadow:var(--shadow);transition:.18s}
+.contact-link-item:hover{border-color:var(--accent);transform:translateX(3px)}
+.contact-icon{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,#EFF6FF,#EDE9FE);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.contact-lbl{font-size:.72rem;color:var(--ink2);font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.contact-val{font-weight:600;font-size:.9rem}
+.contact-form{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:30px;box-shadow:var(--shadow)}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:.76rem;font-weight:700;color:var(--ink2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-family:var(--mono)}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 13px;border-radius:8px;border:1.5px solid var(--border);font-family:var(--font);font-size:.88rem;color:var(--ink);background:var(--mist);outline:none;transition:.15s}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--accent);background:#fff}
+.form-group textarea{resize:vertical;min-height:90px}
+#formMsg{margin-top:10px;font-size:.83rem;font-weight:600;display:none}
+
+/* ── MODALS ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(13,17,23,.5);z-index:1000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:20px;padding:32px;max-width:540px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal h3{font-size:1.15rem;font-weight:800;margin-bottom:18px}
+.modal-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap}
+.modal-actions .btn{padding:9px 18px;font-size:.84rem}
+
+/* ── OWNER TOOLBAR ── */
+.owner-toolbar{display:none;position:fixed;top:var(--nav-h);left:0;right:0;background:linear-gradient(90deg,var(--accent),var(--accent2));padding:9px 20px;z-index:850;align-items:center;gap:8px;flex-wrap:wrap;box-shadow:0 3px 14px rgba(37,99,235,.3)}
+.owner-toolbar.visible{display:flex}
+.owner-toolbar .tb-label{color:#fff;font-size:.78rem;font-weight:700;font-family:var(--mono);flex:1}
+.tbtn{padding:6px 12px;border-radius:7px;font-size:.78rem;font-weight:700;cursor:pointer;border:none;transition:.15s}
+.tbtn-white{background:rgba(255,255,255,.2);color:#fff}
+.tbtn-white:hover{background:rgba(255,255,255,.35)}
+.tbtn-save{background:#fff;color:var(--accent)}
+.tbtn-save:hover{background:#EFF6FF}
+
+/* ── EDIT MODE ── */
+.edit-mode [contenteditable="true"]{outline:2px dashed var(--warn);outline-offset:2px;border-radius:3px;cursor:text;min-width:20px}
+.edit-mode [contenteditable="true"]:focus{outline:2px solid var(--accent);background:rgba(37,99,235,.03)}
+
+/* ── ANALYTICS FAB ── */
+#analyticsPanel{position:fixed;bottom:24px;right:24px;z-index:980;display:none}
+#analyticsPanel.visible{display:block}
+.analytics-fab{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(37,99,235,.4);cursor:pointer;border:none}
+.analytics-fab:hover{transform:scale(1.08)}
+.analytics-drawer{position:absolute;bottom:62px;right:0;width:310px;background:var(--white);border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow-lg);padding:22px;display:none}
+.analytics-drawer.open{display:block}
+.analytics-drawer h3{font-size:.92rem;font-weight:800;margin-bottom:14px}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.stat-row:last-child{border-bottom:none}
+.srLabel{font-size:.78rem;color:var(--ink2);font-family:var(--mono)}
+.srVal{font-size:1.05rem;font-weight:800;color:var(--accent)}
+
+/* ── SETTINGS MODAL ── */
+#settingsModal .modal{max-width:440px}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:var(--success);color:#fff;padding:10px 22px;border-radius:99px;font-weight:700;font-size:.86rem;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+
+/* ── FOOTER ── */
+footer{text-align:center;padding:36px 32px;color:var(--ink2);font-size:.8rem;border-top:1px solid var(--border)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:0 16px}
+  .nav-links{display:none;position:absolute;top:var(--nav-h);left:0;right:0;background:#fff;flex-direction:column;gap:0;padding:10px;border-bottom:1px solid var(--border);box-shadow:var(--shadow)}
+  .nav-links.open{display:flex}
+  .nav-links a{padding:11px 14px}
+  .ham{display:flex}
+  #home{grid-template-columns:1fr;gap:28px;padding:60px 16px 48px}
+  .hero-avatar-wrap{width:130px;height:130px;font-size:44px;margin:0 auto}
+  section{padding:52px 16px}
+  .about-grid,.contact-grid{grid-template-columns:1fr}
+  .hero-stats{gap:18px}
+}
+@media(max-width:480px){.projects-grid{grid-template-columns:1fr}.skills-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-brand">Ashish<span>.</span></div>
+  <div class="nav-links" id="navLinks">
+    <a href="#home" class="active">Home</a>
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#experience">Experience</a>
+    <a href="#contact">Contact</a>
+    <button id="ownerBtn" onclick="toggleOwnerLogin()">Owner</button>
+  </div>
+  <div class="ham" id="ham" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- OWNER TOOLBAR -->
+<div class="owner-toolbar" id="ownerToolbar">
+  <span class="tb-label">✏️ Edit Mode — click any text to edit</span>
+  <button class="tbtn tbtn-white" onclick="openModal('projModal');editingProjId=null;resetProjForm()">+ Project</button>
+  <button class="tbtn tbtn-white" onclick="openModal('expModal')">+ Experience</button>
+  <button class="tbtn tbtn-white" onclick="openModal('skillModal')">+ Skill</button>
+  <button class="tbtn tbtn-white" onclick="openModal('resumeModal')">📄 Resume</button>
+  <button class="tbtn tbtn-white" onclick="openModal('settingsModal')">⚙️ Settings</button>
+  <button class="tbtn tbtn-save" onclick="saveAll()">💾 Save</button>
+  <button class="tbtn tbtn-white" onclick="logoutOwner()">Exit</button>
+</div>
+
+<main>
+<!-- ══ HOME ══ -->
+<section id="home">
+  <div class="hero-left">
+    <div id="heroTag" class="hero-tag open-to-work" onclick="isOwner&&openStatusModal()">
+      <span class="dot dot-green" id="heroTagDot"></span>
+      <span id="heroTagText">Open to Work</span>
+    </div>
+    <h1 class="hero-name">
+      <span id="heroName" contenteditable="false">Ashish Lokhande</span><br>
+      <span class="accent" id="heroTitle" contenteditable="false">MIS &amp; Data Analyst</span>
+    </h1>
+    <p class="hero-subtitle" id="heroSubtitle" contenteditable="false">RTR Analyst · Financial Reporting · Power BI</p>
+    <p class="hero-intro" id="heroIntro" contenteditable="false">Finance professional with 3.6+ years driving data-backed decisions through MIS reporting, RTR processes, and Power BI dashboards. Passionate about turning complex data into clear business insights.</p>
+    <div class="hero-actions">
+      <a id="resumeBtn" href="#" class="btn btn-primary" onclick="trackResumeDl(event)">📥 Download Resume</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch →</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num" id="statExp" contenteditable="false">3.6</div><div class="stat-lbl">Yrs Exp</div></div>
+      <div class="stat"><div class="stat-num" id="statProj" contenteditable="false">10+</div><div class="stat-lbl">Projects</div></div>
+      <div class="stat"><div class="stat-num" id="statTools" contenteditable="false">8+</div><div class="stat-lbl">Tools</div></div>
+    </div>
+  </div>
+  <!-- AVATAR -->
+  <div class="hero-avatar-wrap" id="avatarWrap" onclick="isOwner&&document.getElementById('avatarInput').click()">
+    <span id="avatarEmoji">👤</span>
+    <img id="avatarImg" src="" alt="" style="display:none">
+    <div class="avatar-overlay">📷<br>Change Photo</div>
+    <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="handleAvatarUpload(this)">
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- ══ ABOUT ══ -->
+<section id="about">
+  <div class="section-label">About Me</div>
+  <h2 class="section-title">Career Summary</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p id="aboutP1" contenteditable="false">I am a results-driven MIS and RTR Analyst with 3.6 years of hands-on experience in financial reporting, data analysis, and management information systems. I specialize in building insightful Power BI dashboards and automating Excel-based reports to support executive decision-making.</p>
+      <p id="aboutP2" contenteditable="false">My expertise spans the full Record-to-Report cycle — from journal entries and trial balance reviews to month-end closings and P&L commentary. I have a strong command of SAP, Power Query, SQL, and VBA, enabling me to deliver accurate, timely reports across finance teams.</p>
+      <p id="aboutP3" contenteditable="false">I am committed to continuous improvement and have consistently contributed to DSO reduction, reporting automation, and cross-functional analytics initiatives.</p>
+    </div>
+    <div>
+      <p style="font-size:.76rem;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);margin-bottom:12px">Certifications</p>
+      <div class="cert-list" id="certList"></div>
+      <button id="addCertBtn" class="btn btn-outline" style="display:none;margin-top:12px;font-size:.8rem;padding:8px 14px" onclick="openModal('certModal')">+ Add Certification</button>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- ══ SKILLS ══ -->
+<section id="skills">
+  <div class="section-label">Expertise</div>
+  <h2 class="section-title">Skills &amp; Tools</h2>
+  <div class="skills-grid" id="skillsGrid"></div>
+  <button id="addSkillBtn2" class="btn btn-outline" style="display:none;margin-top:20px;font-size:.84rem" onclick="openModal('skillModal')">+ Add Skill</button>
+</section>
+<div class="divider"></div>
+
+<!-- ══ PROJECTS ══ -->
+<section id="projects">
+  <div class="section-label">Work</div>
+  <h2 class="section-title">Projects</h2>
+  <div class="projects-grid" id="projectsGrid"></div>
+  <button id="addProjBtn" class="btn btn-outline" style="display:none;margin-top:20px;font-size:.84rem" onclick="openModal('projModal');editingProjId=null;resetProjForm()">+ Add Project</button>
+</section>
+<div class="divider"></div>
+
+<!-- ══ EXPERIENCE ══ -->
+<section id="experience">
+  <div class="section-label">Career</div>
+  <h2 class="section-title">Experience</h2>
+  <div class="exp-timeline" id="expTimeline"></div>
+  <button id="addExpBtn" class="btn btn-outline" style="display:none;margin-top:20px;font-size:.84rem" onclick="openModal('expModal')">+ Add Experience</button>
+</section>
+<div class="divider"></div>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact">
+  <div class="section-label">Let's Connect</div>
+  <h2 class="section-title">Contact</h2>
+  <div class="contact-grid">
+    <div class="contact-links" id="contactLinks"></div>
+    <div class="contact-form">
+      <h3 style="font-size:.98rem;font-weight:700;margin-bottom:16px">Send a Message</h3>
+      <div class="form-group"><label>Name</label><input id="cfName" type="text" placeholder="Your name"></div>
+      <div class="form-group"><label>Email</label><input id="cfEmail" type="email" placeholder="your@email.com"></div>
+      <div class="form-group"><label>Message</label><textarea id="cfMsg" placeholder="Your message..."></textarea></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="submitContact()">Send Message</button>
+      <p id="formMsg" style="margin-top:10px;font-size:.82rem;font-weight:600;display:none"></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><p id="footerText" contenteditable="false">Ashish Lokhande &copy; 2025 · Built with purpose</p></footer>
+
+<!-- ══ ANALYTICS FAB ══ -->
+<div id="analyticsPanel">
+  <div class="analytics-drawer" id="analyticsDrawer">
+    <h3>📊 Analytics</h3>
+    <div class="stat-row"><span class="srLabel">Page Views</span><span class="srVal" id="aViews">0</span></div>
+    <div class="stat-row"><span class="srLabel">Unique Visitors</span><span class="srVal" id="aUniq">0</span></div>
+    <div class="stat-row"><span class="srLabel">Resume Downloads</span><span class="srVal" id="aDl">0</span></div>
+    <div class="stat-row"><span class="srLabel">Contact Messages</span><span class="srVal" id="aMsgs">0</span></div>
+    <div class="stat-row"><span class="srLabel">Last Visit</span><span class="srVal" id="aLast" style="font-size:.72rem">—</span></div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+      <p style="font-size:.72rem;font-family:var(--mono);color:var(--ink2);margin-bottom:8px">RECENT MESSAGES</p>
+      <div id="aMsgLog" style="max-height:130px;overflow-y:auto;display:flex;flex-direction:column;gap:7px"></div>
+    </div>
+  </div>
+  <button class="analytics-fab" onclick="toggleAnalytics()">📊</button>
+</div>
+<div id="toast">Saved!</div>
+
+<!-- ══════════════════════════════
+     MODALS
+══════════════════════════════ -->
+
+<!-- LOGIN -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal" style="max-width:360px;text-align:center">
+    <h3>🔐 Owner Login</h3>
+    <p style="font-size:.84rem;color:var(--ink2);margin-bottom:18px">Enter your password to unlock edit mode &amp; analytics.</p>
+    <div class="form-group"><input type="password" id="ownerPwInput" placeholder="Password" onkeyup="if(event.key==='Enter')doLogin()"></div>
+    <p id="loginError" style="color:var(--danger);font-size:.8rem;display:none;margin-bottom:8px">Incorrect password.</p>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="doLogin()">Login</button>
+      <button class="btn btn-outline" onclick="closeModal('loginModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS MODAL -->
+<div class="modal-overlay" id="statusModal">
+  <div class="modal" style="max-width:360px">
+    <h3>🔄 Update Status</h3>
+    <p style="font-size:.84rem;color:var(--ink2);margin-bottom:18px">Choose the status shown on your homepage tag.</p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn btn-outline" style="justify-content:flex-start;gap:12px" onclick="setStatus('open')">
+        <span style="width:10px;height:10px;border-radius:50%;background:var(--success);display:inline-block"></span> Open to Work
+      </button>
+      <button class="btn btn-outline" style="justify-content:flex-start;gap:12px" onclick="setStatus('working')">
+        <span style="width:10px;height:10px;border-radius:50%;background:var(--warn);display:inline-block"></span> Currently Working
+      </button>
+      <button class="btn btn-outline" style="justify-content:flex-start;gap:12px" onclick="setStatus('custom')">
+        ✏️ Custom Status…
+      </button>
+    </div>
+    <div id="customStatusWrap" style="display:none;margin-top:14px">
+      <div class="form-group"><label>Custom text</label><input type="text" id="customStatusText" placeholder="e.g. Freelancing"></div>
+      <div class="form-group">
+        <label>Dot color</label>
+        <select id="customStatusColor">
+          <option value="green">Green</option>
+          <option value="yellow">Yellow</option>
+          <option value="blue">Blue</option>
+          <option value="red">Red</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="applyCustomStatus()">Apply</button>
+    </div>
+    <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal('statusModal')">Close</button></div>
+  </div>
+</div>
+
+<!-- ADD PROJECT -->
+<div class="modal-overlay" id="projModal">
+  <div class="modal" style="max-width:580px">
+    <h3 id="projModalTitle">Add New Project</h3>
+    <div class="form-group"><label>Title</label><input type="text" id="pmTitle" placeholder="e.g. Sales Dashboard"></div>
+    <div class="form-group"><label>Category / Badge</label><input type="text" id="pmBadge" placeholder="Power BI, Finance…"></div>
+    <div class="form-group"><label>Emoji Icon</label><input type="text" id="pmEmoji" placeholder="📊" maxlength="4" style="width:60px"></div>
+    <div class="form-group"><label>Tools / Tags (comma separated)</label><input type="text" id="pmTags" placeholder="Excel, Power BI, SQL"></div>
+    <div class="form-group"><label>Short Description</label><textarea id="pmDesc" style="min-height:72px" placeholder="Brief summary..."></textarea></div>
+    <div class="form-group"><label>Objective</label><textarea id="pmObj" style="min-height:60px" placeholder="Project objective..."></textarea></div>
+    <div class="form-group"><label>KPIs / Key Insights</label><textarea id="pmKpi" style="min-height:60px" placeholder="KPIs, insights, results..."></textarea></div>
+    <div class="form-group">
+      <label>Upload Project Files (PDF, Excel, images, PPTX)</label>
+      <input type="file" id="pmFiles" multiple accept=".pdf,.xlsx,.xls,.png,.jpg,.jpeg,.pptx,.ppt,.csv">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('projModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProject()">Save Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECT DETAIL -->
+<div class="modal-overlay" id="projDetailModal">
+  <div class="modal" style="max-width:660px">
+    <div id="pdImg" style="height:180px;background:linear-gradient(135deg,#EFF6FF,#EDE9FE);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:60px;margin-bottom:18px;overflow:hidden"></div>
+    <h3 id="pdTitle"></h3>
+    <div id="pdTags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px"></div>
+    <div style="margin-bottom:14px"><p style="font-size:.74rem;font-weight:700;font-family:var(--mono);text-transform:uppercase;color:var(--ink2);margin-bottom:5px">Description</p><p id="pdDesc" style="font-size:.88rem;color:var(--ink2);line-height:1.7"></p></div>
+    <div style="margin-bottom:14px"><p style="font-size:.74rem;font-weight:700;font-family:var(--mono);text-transform:uppercase;color:var(--ink2);margin-bottom:5px">Objective</p><p id="pdObj" style="font-size:.88rem;color:var(--ink2);line-height:1.7"></p></div>
+    <div style="margin-bottom:14px"><p style="font-size:.74rem;font-weight:700;font-family:var(--mono);text-transform:uppercase;color:var(--ink2);margin-bottom:5px">KPIs / Insights</p><p id="pdKpi" style="font-size:.88rem;color:var(--ink2);line-height:1.7;white-space:pre-line"></p></div>
+    <div id="pdFilesWrap" style="display:none">
+      <p style="font-size:.74rem;font-weight:700;font-family:var(--mono);text-transform:uppercase;color:var(--ink2);margin-bottom:8px">Project Files</p>
+      <div id="pdFileList" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+    <div class="modal-actions">
+      <div id="pdEditBtns" style="display:none;gap:8px;display:none">
+        <button class="btn btn-outline" style="font-size:.8rem" onclick="editProject(currentProjId)">✏️ Edit</button>
+        <button class="btn btn-danger" style="font-size:.8rem" onclick="deleteProject(currentProjId);closeModal('projDetailModal')">🗑️ Delete</button>
+      </div>
+      <button class="btn btn-outline" onclick="closeModal('projDetailModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD EXPERIENCE -->
+<div class="modal-overlay" id="expModal">
+  <div class="modal">
+    <h3>Add Experience</h3>
+    <div class="form-group"><label>Job Title</label><input type="text" id="emRole" placeholder="MIS Analyst"></div>
+    <div class="form-group"><label>Company</label><input type="text" id="emCompany" placeholder="Company Name, City"></div>
+    <div class="form-group"><label>Period</label><input type="text" id="emPeriod" placeholder="Jan 2022 – Present"></div>
+    <div class="form-group"><label>Responsibilities (one per line)</label><textarea id="emResp" style="min-height:110px" placeholder="Built monthly MIS pack&#10;Automated Excel reports&#10;Reduced DSO by 15%"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('expModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveExperience()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD SKILL -->
+<div class="modal-overlay" id="skillModal">
+  <div class="modal" style="max-width:380px">
+    <h3>Add Skill</h3>
+    <div class="form-group"><label>Skill Name</label><input type="text" id="smName" placeholder="e.g. Power BI"></div>
+    <div class="form-group"><label>Emoji Icon</label><input type="text" id="smIcon" placeholder="📊" maxlength="4" style="width:60px"></div>
+    <div class="form-group"><label>Proficiency % (1–100)</label><input type="number" id="smLevel" min="1" max="100" value="80"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('skillModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSkill()">Add Skill</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD CERTIFICATION -->
+<div class="modal-overlay" id="certModal">
+  <div class="modal" style="max-width:420px">
+    <h3>Add Certification</h3>
+    <div class="form-group"><label>Certification Name</label><input type="text" id="certName" placeholder="e.g. PL-300 Power BI"></div>
+    <div class="form-group"><label>Issuing Organization</label><input type="text" id="certOrg" placeholder="Microsoft, Coursera…"></div>
+    <div class="form-group">
+      <label>Certificate File (PDF or image)</label>
+      <input type="file" id="certFile" accept=".pdf,.png,.jpg,.jpeg">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('certModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCert()">Add Cert</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESUME UPLOAD -->
+<div class="modal-overlay" id="resumeModal">
+  <div class="modal" style="max-width:400px">
+    <h3>📄 Update Resume</h3>
+    <div class="form-group"><label>Upload PDF</label><input type="file" id="resumeFile" accept=".pdf"></div>
+    <div class="form-group"><label>Or Paste URL</label><input type="text" id="resumeUrl" placeholder="https://drive.google.com/..."></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('resumeModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveResume()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal" id="settingsModal" style="max-width:440px">
+    <h3>⚙️ Settings</h3>
+    <div class="form-group"><label>Change Password</label><input type="password" id="newPw1" placeholder="New password"></div>
+    <div class="form-group"><label>Confirm Password</label><input type="password" id="newPw2" placeholder="Confirm new password"></div>
+    <p id="pwMsg" style="font-size:.8rem;display:none;margin-bottom:8px"></p>
+    <div class="form-group" style="margin-top:8px"><label>Font Size</label>
+      <select id="fontSizeSelect">
+        <option value="15">Small (15px)</option>
+        <option value="16" selected>Normal (16px)</option>
+        <option value="17">Large (17px)</option>
+        <option value="18">Larger (18px)</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Accent Color</label>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px" id="colorPicker">
+        <div data-color="#2563EB" onclick="setAccent('#2563EB',this)" style="width:30px;height:30px;border-radius:50%;background:#2563EB;cursor:pointer;border:3px solid transparent"></div>
+        <div data-color="#7C3AED" onclick="setAccent('#7C3AED',this)" style="width:30px;height:30px;border-radius:50%;background:#7C3AED;cursor:pointer;border:3px solid transparent"></div>
+        <div data-color="#0EA5E9" onclick="setAccent('#0EA5E9',this)" style="width:30px;height:30px;border-radius:50%;background:#0EA5E9;cursor:pointer;border:3px solid transparent"></div>
+        <div data-color="#059669" onclick="setAccent('#059669',this)" style="width:30px;height:30px;border-radius:50%;background:#059669;cursor:pointer;border:3px solid transparent"></div>
+        <div data-color="#DC2626" onclick="setAccent('#DC2626',this)" style="width:30px;height:30px;border-radius:50%;background:#DC2626;cursor:pointer;border:3px solid transparent"></div>
+        <div data-color="#D97706" onclick="setAccent('#D97706',this)" style="width:30px;height:30px;border-radius:50%;background:#D97706;cursor:pointer;border:3px solid transparent"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('settingsModal')">Close</button>
+      <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<!-- CERT VIEWER -->
+<div class="modal-overlay" id="certViewModal">
+  <div class="modal" style="max-width:700px;padding:20px">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+      <button class="btn btn-outline" style="padding:6px 14px;font-size:.82rem" onclick="closeModal('certViewModal')">✕ Close</button>
+    </div>
+    <div id="certViewContent" style="text-align:center"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════
+const DEF_PASSWORD = 'Pass@123';
+let isOwner = false;
+let analyticsOpen = false;
+let editingProjId = null;
+let currentProjId = null;
+
+const DEFAULT = {
+  password: DEF_PASSWORD,
+  status: 'open',
+  statusText: 'Open to Work',
+  statusColor: 'green',
+  heroName: 'Ashish Lokhande',
+  heroTitle: 'MIS & Data Analyst',
+  heroSubtitle: 'RTR Analyst · Financial Reporting · Power BI',
+  heroIntro: 'Finance professional with 3.6+ years driving data-backed decisions through MIS reporting, RTR processes, and Power BI dashboards. Passionate about turning complex data into clear business insights.',
+  statExp: '3.6', statProj: '10+', statTools: '8+',
+  aboutP1: 'I am a results-driven MIS and RTR Analyst with 3.6 years of hands-on experience in financial reporting, data analysis, and management information systems. I specialize in building insightful Power BI dashboards and automating Excel-based reports to support executive decision-making.',
+  aboutP2: 'My expertise spans the full Record-to-Report cycle — from journal entries and trial balance reviews to month-end closings and P&L commentary. I have a strong command of SAP, Power Query, SQL, and VBA, enabling me to deliver accurate, timely reports across finance teams.',
+  aboutP3: 'I am committed to continuous improvement and have consistently contributed to DSO reduction, reporting automation, and cross-functional analytics initiatives.',
+  footerText: 'Ashish Lokhande © 2025 · Built with purpose',
+  avatar: null,
+  resumeUrl: null,
+  fontSize: '16',
+  accentColor: '#2563EB',
+  skills: [
+    {id:'sk1',icon:'📊',name:'Advanced Excel',level:95},
+    {id:'sk2',icon:'⚡',name:'Power Query',level:90},
+    {id:'sk3',icon:'📈',name:'Power BI',level:88},
+    {id:'sk4',icon:'🛢️',name:'SQL',level:78},
+    {id:'sk5',icon:'🤖',name:'VBA / Macros',level:80},
+    {id:'sk6',icon:'🏭',name:'SAP (FI/CO)',level:82},
+    {id:'sk7',icon:'💰',name:'Financial Reporting',level:92},
+    {id:'sk8',icon:'🔄',name:'RTR Process',level:90},
+    {id:'sk9',icon:'📋',name:'MIS Reporting',level:95}
+  ],
+  certs: [
+    {id:'c1',name:'Microsoft Power BI Data Analyst',org:'Microsoft (PL-300)',file:null},
+    {id:'c2',name:'Advanced Excel Certification',org:'Coursera',file:null},
+    {id:'c3',name:'SAP FI Functional Basics',org:'SAP Learning Hub',file:null}
+  ],
+  projects: [
+    {id:'p1',emoji:'📊',badge:'Power BI',title:'Sales Dashboard',tags:['Excel','Power BI','DAX'],desc:'Interactive sales performance dashboard tracking KPIs across regions and product lines.',obj:'Provide real-time visibility into sales performance for senior management.',kpi:'Revenue YTD, MOM Growth %, Top 10 Customers, Regional Breakdown, Forecast vs Actual',files:[]},
+    {id:'p2',emoji:'📉',badge:'Finance',title:'Budget vs Actual Analysis',tags:['Excel','Power Query','Finance'],desc:'Monthly variance analysis report comparing budgeted vs actuals with management commentary.',obj:'Enable finance leadership to identify cost overruns and reforecast quarterly budgets.',kpi:'Variance %, YTD Actuals, Cost Center Breakdown, Risk-flagged Line Items',files:[]},
+    {id:'p3',emoji:'⏱️',badge:'RTR',title:'Outstanding & Aging Report',tags:['Excel','VBA','SAP'],desc:'Automated AR aging report with customer drill-down and collection tracking.',obj:'Reduce DSO and improve collections by providing daily aging visibility.',kpi:'DSO, Overdue %, Bucket-wise Aging (30/60/90/120+ days), Collection Efficiency',files:[]},
+    {id:'p4',emoji:'📑',badge:'Reporting',title:'Financial Reporting',tags:['SAP','Excel','Power Query'],desc:'End-to-end P&L, Trial Balance, and Balance Sheet reporting for month-end close.',obj:'Automate month-end close reporting with zero-error financial statements.',kpi:'P&L variance, TB reconciliation, BS line movement, Intercompany eliminations',files:[]}
+  ],
+  experience: [
+    {id:'e1',role:'MIS Analyst',company:'Your Company Name',period:'Jan 2022 – Present',resp:['Built and maintained 15+ Power BI dashboards for senior leadership','Automated monthly MIS pack reducing preparation time by 60%','Performed Budget vs Actual variance analysis with management commentary','Managed RTR cycle including journal entries, TB review, and month-end close','Developed VBA macros for data extraction and report automation']}
+  ],
+  contact: {email:'ashish@email.com',phone:'+91 00000 00000',linkedin:'linkedin.com/in/ashishlokhande',location:'Pune, Maharashtra, India'}
+};
+
+function loadD(){try{const s=localStorage.getItem('AL_portfolio');return s?JSON.parse(s):JSON.parse(JSON.stringify(DEFAULT));}catch(e){return JSON.parse(JSON.stringify(DEFAULT));}}
+function saveD(){localStorage.setItem('AL_portfolio',JSON.stringify(D));}
+let D = loadD();
+// Ensure all default arrays exist if upgrading
+if(!D.skills) D.skills = DEFAULT.skills;
+if(!D.certs)  D.certs  = DEFAULT.certs;
+if(!D.projects) D.projects = DEFAULT.projects;
+if(!D.experience) D.experience = DEFAULT.experience;
+if(!D.contact) D.contact = DEFAULT.contact;
+if(!D.password) D.password = DEF_PASSWORD;
+
+// ════════════════════════════════════════
+// ANALYTICS
+// ════════════════════════════════════════
+function getA(){try{return JSON.parse(localStorage.getItem('AL_analytics')||'{}');}catch(e){return {};}}
+function saveA(a){localStorage.setItem('AL_analytics',JSON.stringify(a));}
+function trackView(){
+  const a=getA();
+  a.views=(a.views||0)+1;
+  let vid=localStorage.getItem('AL_vid')||null;
+  if(!vid){vid=Math.random().toString(36).slice(2);localStorage.setItem('AL_vid',vid);}
+  const vs=a.visitors||[];
+  if(!vs.includes(vid))vs.push(vid);
+  a.visitors=vs;
+  a.lastVisit=new Date().toLocaleString('en-IN');
+  saveA(a);
+}
+function trackResumeDl(e){
+  const a=getA();a.downloads=(a.downloads||0)+1;saveA(a);
+  if(!D.resumeUrl){alert('Resume not uploaded yet. Please login as Owner and upload your resume.');e.preventDefault();}
+}
+function trackMsg(name,email,msg){
+  const a=getA();a.messages=(a.messages||0)+1;
+  const log=a.msgLog||[];
+  log.unshift({name,email,msg:msg.substring(0,120),date:new Date().toLocaleString('en-IN')});
+  a.msgLog=log.slice(0,30);saveA(a);
+}
+function toggleAnalytics(){
+  analyticsOpen=!analyticsOpen;
+  document.getElementById('analyticsDrawer').classList.toggle('open',analyticsOpen);
+  if(analyticsOpen){
+    const a=getA();
+    document.getElementById('aViews').textContent=a.views||0;
+    document.getElementById('aUniq').textContent=(a.visitors||[]).length;
+    document.getElementById('aDl').textContent=a.downloads||0;
+    document.getElementById('aMsgs').textContent=a.messages||0;
+    document.getElementById('aLast').textContent=a.lastVisit||'—';
+    const ml=document.getElementById('aMsgLog');ml.innerHTML='';
+    (a.msgLog||[]).slice(0,6).forEach(m=>{
+      ml.innerHTML+=`<div style="background:var(--mist);border-radius:7px;padding:8px 10px;font-size:.74rem"><strong>${esc(m.name)}</strong> <span style="color:var(--ink2)">${m.date}</span><p style="color:var(--ink2);margin-top:2px">${esc(m.msg)}</p></div>`;
+    });
+  }
+}
+
+// ════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════
+function renderAll(){
+  applyFont();applyAccent();
+  renderHero();renderSkills();renderCerts();renderProjects();renderExperience();renderContact();
+}
+function renderHero(){
+  setText('heroName',D.heroName);setText('heroTitle',D.heroTitle);
+  setText('heroSubtitle',D.heroSubtitle);setText('heroIntro',D.heroIntro);
+  setText('statExp',D.statExp);setText('statProj',D.statProj);setText('statTools',D.statTools);
+  setText('footerText',D.footerText);
+  applyStatus();
+  // Avatar
+  const img=document.getElementById('avatarImg');
+  const em=document.getElementById('avatarEmoji');
+  if(D.avatar){img.src=D.avatar;img.style.display='block';em.style.display='none';}
+  else{img.style.display='none';em.style.display='block';}
+  // Resume btn
+  const rb=document.getElementById('resumeBtn');
+  if(D.resumeUrl){rb.href=D.resumeUrl;rb.setAttribute('download','Ashish_Lokhande_Resume.pdf');}
+  else{rb.href='#';}
+}
+function applyStatus(){
+  const tag=document.getElementById('heroTag');
+  const dot=document.getElementById('heroTagDot');
+  const txt=document.getElementById('heroTagText');
+  tag.className='hero-tag';
+  const colorMap={green:['open-to-work','dot-green'],yellow:['working','dot-yellow'],blue:['working','dot-yellow'],red:['working','dot-yellow']};
+  const s=D.statusColor||'green';
+  const dotColors={green:'#10B981',yellow:'#F59E0B',blue:'#0EA5E9',red:'#EF4444'};
+  if(s==='green')tag.classList.add('open-to-work');else tag.classList.add('working');
+  dot.className='dot';
+  dot.style.background=dotColors[s]||dotColors.green;
+  txt.textContent=D.statusText||'Open to Work';
+}
+function renderSkills(){
+  const g=document.getElementById('skillsGrid');
+  g.innerHTML=D.skills.map(s=>`
+    <div class="skill-card">
+      <button class="skill-del-btn" onclick="deleteSkill('${s.id}')">✕</button>
+      <div class="skill-icon">${s.icon}</div>
+      <div class="skill-name">${esc(s.name)}</div>
+      <div class="skill-level-wrap"><div class="skill-fill" style="width:${s.level}%"></div></div>
+      <div class="skill-pct">${s.level}%</div>
+    </div>`).join('');
+}
+function renderCerts(){
+  const list=document.getElementById('certList');
+  list.innerHTML=D.certs.map(c=>`
+    <div class="cert-item" data-cid="${c.id}">
+      <div class="cert-thumb" onclick="viewCert('${c.id}')">
+        ${c.file?`<img src="${c.file}" alt="">` : '🏅'}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div class="cert-name" id="cn_${c.id}" contenteditable="false">${esc(c.name)}</div>
+        <div class="cert-org" id="co_${c.id}" contenteditable="false">${esc(c.org)}</div>
+      </div>
+      ${c.file?`<button class="cert-view-btn" onclick="viewCert('${c.id}')">View</button>`:''}
+      <button style="display:none;padding:3px 8px;border-radius:5px;background:var(--danger);color:#fff;font-size:.7rem;border:none;cursor:pointer;margin-left:6px" class="cert-del-btn owner-only" onclick="deleteCert('${c.id}')">✕</button>
+    </div>`).join('');
+  if(isOwner){
+    document.querySelectorAll('.cert-del-btn').forEach(b=>b.style.display='inline-flex');
+    document.getElementById('addCertBtn').style.display='inline-flex';
+    document.querySelectorAll('#certList .cert-name, #certList .cert-org').forEach(el=>el.contentEditable='true');
+  }
+}
+function renderProjects(){
+  const g=document.getElementById('projectsGrid');
+  g.innerHTML=D.projects.map(p=>`
+    <div class="project-card" onclick="openProjDetail('${p.id}')">
+      <button class="proj-del-btn" onclick="event.stopPropagation();deleteProject('${p.id}')">✕</button>
+      <div class="project-img">
+        <span>${p.emoji||'📊'}</span>
+        <span class="project-badge">${p.badge||''}</span>
+      </div>
+      <div class="project-body">
+        <div class="project-title">${esc(p.title)}</div>
+        <div class="project-desc">${esc(p.desc)}</div>
+        <div class="project-tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+        ${p.files&&p.files.length?`<p style="font-size:.73rem;color:var(--ink2);margin-top:10px;font-family:var(--mono)">📎 ${p.files.length} file${p.files.length>1?'s':''} attached</p>`:''}
+      </div>
+    </div>`).join('');
+  if(isOwner) document.getElementById('addProjBtn').style.display='inline-flex';
+}
+function renderExperience(){
+  const g=document.getElementById('expTimeline');
+  g.innerHTML=D.experience.map(e=>`
+    <div class="exp-item" data-eid="${e.id}">
+      <button class="exp-del-btn" onclick="deleteExp('${e.id}')">✕ Delete</button>
+      <div class="exp-role">${esc(e.role)}</div>
+      <div class="exp-company">${esc(e.company)}</div>
+      <div class="exp-period">${esc(e.period)}</div>
+      <ul class="exp-list">${(e.resp||[]).map(r=>`<li>${esc(r)}</li>`).join('')}</ul>
+    </div>`).join('');
+  if(isOwner) document.getElementById('addExpBtn').style.display='inline-flex';
+}
+function renderContact(){
+  const c=D.contact;
+  document.getElementById('contactLinks').innerHTML=`
+    <a class="contact-link-item" href="mailto:${esc(c.email)}">
+      <div class="contact-icon">📧</div>
+      <div><div class="contact-lbl">Email</div><div class="contact-val" id="cEmail" contenteditable="false">${esc(c.email)}</div></div>
+    </a>
+    <a class="contact-link-item" href="tel:${esc(c.phone)}">
+      <div class="contact-icon">📱</div>
+      <div><div class="contact-lbl">Phone</div><div class="contact-val" id="cPhone" contenteditable="false">${esc(c.phone)}</div></div>
+    </a>
+    <a class="contact-link-item" href="https://${esc(c.linkedin)}" target="_blank">
+      <div class="contact-icon">💼</div>
+      <div><div class="contact-lbl">LinkedIn</div><div class="contact-val" id="cLinkedin" contenteditable="false">${esc(c.linkedin)}</div></div>
+    </a>
+    <div class="contact-link-item">
+      <div class="contact-icon">📍</div>
+      <div><div class="contact-lbl">Location</div><div class="contact-val" id="cLocation" contenteditable="false">${esc(c.location)}</div></div>
+    </div>`;
+  if(isOwner){
+    ['cEmail','cPhone','cLinkedin','cLocation'].forEach(id=>{
+      const el=document.getElementById(id);if(el)el.contentEditable='true';
+    });
+  }
+}
+
+// ════════════════════════════════════════
+// OWNER AUTH
+// ════════════════════════════════════════
+function toggleOwnerLogin(){isOwner?logoutOwner():openModal('loginModal');setTimeout(()=>{const i=document.getElementById('ownerPwInput');if(i)i.focus();},120);}
+function doLogin(){
+  const pw=document.getElementById('ownerPwInput').value;
+  const err=document.getElementById('loginError');
+  if(pw===(D.password||DEF_PASSWORD)){
+    isOwner=true;closeModal('loginModal');
+    document.getElementById('ownerPwInput').value='';
+    err.style.display='none';
+    enableOwner();
+  } else {err.style.display='block';}
+}
+function logoutOwner(){isOwner=false;disableOwner();}
+function enableOwner(){
+  document.body.classList.add('edit-mode');
+  document.getElementById('ownerToolbar').classList.add('visible');
+  const ob=document.getElementById('ownerBtn');ob.classList.add('active-owner');ob.textContent='Exit Edit';
+  document.getElementById('analyticsPanel').classList.add('visible');
+  document.getElementById('addCertBtn').style.display='inline-flex';
+  document.getElementById('addProjBtn').style.display='inline-flex';
+  document.getElementById('addExpBtn').style.display='inline-flex';
+  document.getElementById('addSkillBtn2').style.display='inline-flex';
+  // Make text fields editable
+  ['heroName','heroTitle','heroSubtitle','heroIntro','statExp','statProj','statTools','aboutP1','aboutP2','aboutP3','footerText'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.contentEditable='true';
+  });
+  document.querySelectorAll('#certList .cert-name,#certList .cert-org').forEach(el=>el.contentEditable='true');
+  document.querySelectorAll('.cert-del-btn').forEach(b=>b.style.display='inline-flex');
+  ['cEmail','cPhone','cLinkedin','cLocation'].forEach(id=>{const el=document.getElementById(id);if(el)el.contentEditable='true';});
+  renderSkills();renderCerts();renderProjects();renderExperience();
+}
+function disableOwner(){
+  document.body.classList.remove('edit-mode');
+  document.getElementById('ownerToolbar').classList.remove('visible');
+  const ob=document.getElementById('ownerBtn');ob.classList.remove('active-owner');ob.textContent='Owner';
+  document.getElementById('analyticsPanel').classList.remove('visible');
+  document.getElementById('addCertBtn').style.display='none';
+  document.getElementById('addProjBtn').style.display='none';
+  document.getElementById('addExpBtn').style.display='none';
+  document.getElementById('addSkillBtn2').style.display='none';
+  ['heroName','heroTitle','heroSubtitle','heroIntro','statExp','statProj','statTools','aboutP1','aboutP2','aboutP3','footerText'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.contentEditable='false';
+  });
+  document.querySelectorAll('#certList .cert-name,#certList .cert-org').forEach(el=>el.contentEditable='false');
+  document.querySelectorAll('.cert-del-btn').forEach(b=>b.style.display='none');
+  ['cEmail','cPhone','cLinkedin','cLocation'].forEach(id=>{const el=document.getElementById(id);if(el)el.contentEditable='false';});
+  renderSkills();renderCerts();renderProjects();renderExperience();
+}
+
+// ════════════════════════════════════════
+// SAVE ALL
+// ════════════════════════════════════════
+function saveAll(){
+  D.heroName=getText('heroName');D.heroTitle=getText('heroTitle');
+  D.heroSubtitle=getText('heroSubtitle');D.heroIntro=getText('heroIntro');
+  D.statExp=getText('statExp');D.statProj=getText('statProj');D.statTools=getText('statTools');
+  D.aboutP1=getText('aboutP1');D.aboutP2=getText('aboutP2');D.aboutP3=getText('aboutP3');
+  D.footerText=getText('footerText');
+  // Contact
+  D.contact.email=getText('cEmail')||D.contact.email;
+  D.contact.phone=getText('cPhone')||D.contact.phone;
+  D.contact.linkedin=getText('cLinkedin')||D.contact.linkedin;
+  D.contact.location=getText('cLocation')||D.contact.location;
+  // Certs text (inline edited)
+  D.certs.forEach(c=>{
+    const n=document.getElementById('cn_'+c.id);
+    const o=document.getElementById('co_'+c.id);
+    if(n)c.name=n.textContent.trim();
+    if(o)c.org=o.textContent.trim();
+  });
+  saveD();renderAll();toast('✅ All changes saved!');
+}
+
+// ════════════════════════════════════════
+// AVATAR
+// ════════════════════════════════════════
+function handleAvatarUpload(input){
+  const file=input.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{D.avatar=e.target.result;saveD();renderHero();toast('📷 Photo updated!');};
+  r.readAsDataURL(file);
+}
+
+// ════════════════════════════════════════
+// STATUS
+// ════════════════════════════════════════
+function openStatusModal(){openModal('statusModal');}
+function setStatus(type){
+  if(type==='open'){D.statusText='Open to Work';D.statusColor='green';}
+  else if(type==='working'){D.statusText='Currently Working';D.statusColor='yellow';}
+  else{document.getElementById('customStatusWrap').style.display='block';return;}
+  saveD();applyStatus();closeModal('statusModal');toast('✅ Status updated!');
+}
+function applyCustomStatus(){
+  const txt=document.getElementById('customStatusText').value.trim();
+  const col=document.getElementById('customStatusColor').value;
+  if(!txt)return;
+  D.statusText=txt;D.statusColor=col;
+  saveD();applyStatus();closeModal('statusModal');
+  document.getElementById('customStatusWrap').style.display='none';
+  toast('✅ Status updated!');
+}
+
+// ════════════════════════════════════════
+// SKILLS
+// ════════════════════════════════════════
+function saveSkill(){
+  const name=document.getElementById('smName').value.trim();
+  if(!name)return alert('Enter skill name');
+  const sk={id:'sk'+Date.now(),icon:document.getElementById('smIcon').value||'⚡',name,level:parseInt(document.getElementById('smLevel').value)||80};
+  D.skills.push(sk);saveD();renderSkills();closeModal('skillModal');toast('✅ Skill added!');
+}
+function deleteSkill(id){
+  if(!confirm('Remove this skill?'))return;
+  D.skills=D.skills.filter(s=>s.id!==id);saveD();renderSkills();
+}
+
+// ════════════════════════════════════════
+// CERTS
+// ════════════════════════════════════════
+function saveCert(){
+  const name=document.getElementById('certName').value.trim();
+  if(!name)return alert('Enter certification name');
+  const file=document.getElementById('certFile').files[0];
+  const org=document.getElementById('certOrg').value.trim();
+  function finish(fileData){
+    D.certs.push({id:'c'+Date.now(),name,org,file:fileData||null});
+    saveD();renderCerts();closeModal('certModal');
+    document.getElementById('certName').value='';
+    document.getElementById('certOrg').value='';
+    document.getElementById('certFile').value='';
+    toast('✅ Certification added!');
+  }
+  if(file){const r=new FileReader();r.onload=e=>finish(e.target.result);r.readAsDataURL(file);}
+  else finish(null);
+}
+function deleteCert(id){
+  if(!confirm('Remove this certification?'))return;
+  D.certs=D.certs.filter(c=>c.id!==id);saveD();renderCerts();
+}
+function viewCert(id){
+  const c=D.certs.find(x=>x.id===id);if(!c||!c.file)return;
+  const vc=document.getElementById('certViewContent');
+  if(c.file.includes('application/pdf')){
+    vc.innerHTML=`<iframe src="${c.file}" style="width:100%;height:500px;border:none;border-radius:8px"></iframe>`;
+  } else {
+    vc.innerHTML=`<img src="${c.file}" style="max-width:100%;border-radius:8px">`;
+  }
+  openModal('certViewModal');
+}
+
+// ════════════════════════════════════════
+// PROJECTS
+// ════════════════════════════════════════
+function resetProjForm(){
+  ['pmTitle','pmBadge','pmEmoji','pmTags','pmDesc','pmObj','pmKpi'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value=id==='pmEmoji'?'📊':'';
+  });
+  document.getElementById('pmFiles').value='';
+  document.getElementById('projModalTitle').textContent='Add New Project';
+}
+function saveProject(){
+  const title=document.getElementById('pmTitle').value.trim();
+  if(!title)return alert('Enter project title');
+  const tags=document.getElementById('pmTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  const baseProj={
+    id:editingProjId||('p'+Date.now()),
+    emoji:document.getElementById('pmEmoji').value||'📊',
+    badge:document.getElementById('pmBadge').value.trim(),
+    title,tags,
+    desc:document.getElementById('pmDesc').value.trim(),
+    obj:document.getElementById('pmObj').value.trim(),
+    kpi:document.getElementById('pmKpi').value.trim(),
+    files:editingProjId?(D.projects.find(p=>p.id===editingProjId)||{}).files||[]:[]
+  };
+  const fileInput=document.getElementById('pmFiles');
+  const newFiles=Array.from(fileInput.files);
+  if(newFiles.length===0){
+    finishSaveProj(baseProj);return;
+  }
+  let loaded=0;
+  newFiles.forEach(file=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      baseProj.files.push({name:file.name,url:e.target.result,type:file.type});
+      loaded++;
+      if(loaded===newFiles.length)finishSaveProj(baseProj);
+    };
+    r.readAsDataURL(file);
+  });
+}
+function finishSaveProj(proj){
+  if(editingProjId){const idx=D.projects.findIndex(p=>p.id===editingProjId);if(idx>-1)D.projects[idx]=proj;}
+  else D.projects.push(proj);
+  editingProjId=null;saveD();renderProjects();closeModal('projModal');toast('✅ Project saved!');
+}
+function deleteProject(id){
+  if(!confirm('Delete this project?'))return;
+  D.projects=D.projects.filter(p=>p.id!==id);saveD();renderProjects();
+}
+function editProject(id){
+  const p=D.projects.find(x=>x.id===id);if(!p)return;
+  editingProjId=id;
+  document.getElementById('projModalTitle').textContent='Edit Project';
+  document.getElementById('pmTitle').value=p.title;
+  document.getElementById('pmBadge').value=p.badge||'';
+  document.getElementById('pmEmoji').value=p.emoji||'📊';
+  document.getElementById('pmTags').value=(p.tags||[]).join(', ');
+  document.getElementById('pmDesc').value=p.desc||'';
+  document.getElementById('pmObj').value=p.obj||'';
+  document.getElementById('pmKpi').value=p.kpi||'';
+  closeModal('projDetailModal');openModal('projModal');
+}
+function openProjDetail(id){
+  const p=D.projects.find(x=>x.id===id);if(!p)return;
+  currentProjId=id;
+  document.getElementById('pdImg').innerHTML=`<span style="font-size:60px">${p.emoji||'📊'}</span>`;
+  document.getElementById('pdTitle').textContent=p.title;
+  document.getElementById('pdTags').innerHTML=(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('');
+  document.getElementById('pdDesc').textContent=p.desc||'—';
+  document.getElementById('pdObj').textContent=p.obj||'—';
+  document.getElementById('pdKpi').textContent=p.kpi||'—';
+  const fw=document.getElementById('pdFilesWrap');
+  const fl=document.getElementById('pdFileList');
+  if(p.files&&p.files.length){
+    fl.innerHTML=p.files.map(f=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--mist);border-radius:7px">
+      <span>📎</span><a href="${f.url}" download="${f.name}" style="color:var(--accent);font-weight:600;font-size:.82rem">${esc(f.name)}</a>
+    </div>`).join('');
+    fw.style.display='block';
+  }else{fw.style.display='none';}
+  const eb=document.getElementById('pdEditBtns');
+  if(isOwner){eb.style.display='flex';}else{eb.style.display='none';}
+  openModal('projDetailModal');
+}
+
+// ════════════════════════════════════════
+// EXPERIENCE
+// ════════════════════════════════════════
+function saveExperience(){
+  const role=document.getElementById('emRole').value.trim();
+  if(!role)return alert('Enter job title');
+  const resp=document.getElementById('emResp').value.split('\n').map(r=>r.replace(/^[•\-→]\s*/,'').trim()).filter(Boolean);
+  D.experience.unshift({id:'e'+Date.now(),role,company:document.getElementById('emCompany').value.trim(),period:document.getElementById('emPeriod').value.trim(),resp});
+  saveD();renderExperience();closeModal('expModal');
+  ['emRole','emCompany','emPeriod','emResp'].forEach(id=>document.getElementById(id).value='');
+  toast('✅ Experience added!');
+}
+function deleteExp(id){
+  if(!confirm('Delete this experience?'))return;
+  D.experience=D.experience.filter(e=>e.id!==id);saveD();renderExperience();
+}
+
+// ════════════════════════════════════════
+// CONTACT FORM
+// ════════════════════════════════════════
+function submitContact(){
+  const name=document.getElementById('cfName').value.trim();
+  const email=document.getElementById('cfEmail').value.trim();
+  const msg=document.getElementById('cfMsg').value.trim();
+  const el=document.getElementById('formMsg');
+  if(!name||!email||!msg){el.textContent='Please fill all fields.';el.style.color='var(--danger)';el.style.display='block';return;}
+  trackMsg(name,email,msg);
+  el.textContent=`✅ Thanks ${name}! Your message has been saved. I'll get back to you soon.`;
+  el.style.color='var(--success)';el.style.display='block';
+  ['cfName','cfEmail','cfMsg'].forEach(id=>document.getElementById(id).value='');
+}
+
+// ════════════════════════════════════════
+// RESUME
+// ════════════════════════════════════════
+function saveResume(){
+  const url=document.getElementById('resumeUrl').value.trim();
+  const file=document.getElementById('resumeFile').files[0];
+  function apply(src){D.resumeUrl=src;saveD();renderHero();closeModal('resumeModal');toast('✅ Resume saved!');}
+  if(file){const r=new FileReader();r.onload=e=>apply(e.target.result);r.readAsDataURL(file);}
+  else if(url)apply(url);
+  else alert('Select a file or enter a URL.');
+}
+
+// ════════════════════════════════════════
+// SETTINGS
+// ════════════════════════════════════════
+function saveSettings(){
+  const p1=document.getElementById('newPw1').value;
+  const p2=document.getElementById('newPw2').value;
+  const msg=document.getElementById('pwMsg');
+  if(p1||p2){
+    if(p1!==p2){msg.textContent='Passwords do not match.';msg.style.color='var(--danger)';msg.style.display='block';return;}
+    if(p1.length<6){msg.textContent='Password must be at least 6 characters.';msg.style.color='var(--danger)';msg.style.display='block';return;}
+    D.password=p1;
+    msg.textContent='Password changed!';msg.style.color='var(--success)';msg.style.display='block';
+    document.getElementById('newPw1').value='';document.getElementById('newPw2').value='';
+    setTimeout(()=>{msg.style.display='none';},2000);
+  }
+  const fs=document.getElementById('fontSizeSelect').value;
+  D.fontSize=fs;
+  applyFont();saveD();toast('✅ Settings saved!');
+}
+function applyFont(){
+  document.documentElement.style.fontSize=(D.fontSize||'16')+'px';
+}
+function setAccent(color,el){
+  D.accentColor=color;
+  applyAccent();
+  document.querySelectorAll('#colorPicker div').forEach(d=>d.style.border='3px solid transparent');
+  if(el)el.style.border='3px solid var(--ink)';
+}
+function applyAccent(){
+  if(D.accentColor)document.documentElement.style.setProperty('--accent',D.accentColor);
+}
+
+// ════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════
+function esc(str){if(!str)return'';return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function getText(id){const el=document.getElementById(id);return el?el.textContent.trim():'';}
+function setText(id,val){const el=document.getElementById(id);if(el&&val)el.textContent=val;}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.opacity='1';setTimeout(()=>{t.style.opacity='0';},2500);}
+
+// Close modals on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
+
+// Nav active on scroll
+const secs=document.querySelectorAll('section[id]');
+const nls=document.querySelectorAll('.nav-links a[href^="#"]');
+new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){nls.forEach(l=>{l.classList.remove('active');if(l.getAttribute('href')==='#'+e.target.id)l.classList.add('active');});}});
+},{threshold:.3,rootMargin:'-60px 0px -40% 0px'}).observe&&secs.forEach(s=>new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){nls.forEach(l=>{l.classList.remove('active');if(l.getAttribute('href')==='#'+e.target.id)l.classList.add('active');});}});
+},{threshold:.3,rootMargin:'-60px 0px -40% 0px'}).observe(s));
+
+// ════════════════════════════════════════
+// SERVICE WORKER (offline support)
+// ════════════════════════════════════════
+if('serviceWorker' in navigator){
+  const swCode=`
+const CACHE='al-portfolio-v1';
+const ASSETS=['/'];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));self.skipWaiting();});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});
+self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const clone=res.clone();caches.open(CACHE).then(c=>c.put(e.request,clone));return res;}).catch(()=>caches.match('/'))));});
+  `;
+  const blob=new Blob([swCode],{type:'application/javascript'});
+  const swUrl=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(()=>{});
+}
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  trackView();
+  renderAll();
+  // Restore font size setting in select
+  const fss=document.getElementById('fontSizeSelect');
+  if(fss)fss.value=D.fontSize||'16';
+  // Restore accent color ring
+  document.querySelectorAll('#colorPicker div').forEach(d=>{
+    if(d.dataset.color===D.accentColor)d.style.border='3px solid var(--ink)';
+  });
+});
+</script>
+</body>
+</html>
