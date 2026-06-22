@@ -1038,37 +1038,47 @@ function deleteExp(id){
 // CONTACT FORM
 // ════════════════════════════════════════
 function submitContact(){
-const name=document.getElementById('cfName').value.trim();
-const email=document.getElementById('cfEmail').value.trim();
-const msg=document.getElementById('cfMsg').value.trim();
-const el=document.getElementById('formMsg');
+  const name=document.getElementById('cfName').value.trim();
+  const email=document.getElementById('cfEmail').value.trim();
+  const msg=document.getElementById('cfMsg').value.trim();
+  const el=document.getElementById('formMsg');
 
-if(!name||!email||!msg){
-el.textContent='Please fill all fields.';
-el.style.color='var(--danger)';
-el.style.display='block';
-return;
-}
+  if(!name||!email||!msg){
+    el.textContent='Please fill all fields.';
+    el.style.color='var(--danger)';
+    el.style.display='block';
+    return;
+  }
 
-trackMsg(name,email,msg);
+  emailjs.send(
+    'service_6x28ye2',
+    'template_l8n11bg',
+    {
+      from_name: name,
+      from_email: email,
+      message: msg
+    }
+  )
+  .then(function(){
 
-el.textContent=`✅ Thanks ${name}! Your message has been submitted successfully. I'll get back to you soon.`;
-el.style.color='var(--success)';
-el.style.display='block';
+    el.textContent=`✅ Thanks ${name}! Your message has been submitted successfully. I'll get back to you soon.`;
+    el.style.color='var(--success)';
+    el.style.display='block';
 
-const subject = encodeURIComponent('Portfolio Contact from ' + name);
-const body = encodeURIComponent(
-'Name: ' + name + '\n' +
-'Email: ' + email + '\n\n' +
-'Message:\n' + msg
-);
+    ['cfName','cfEmail','cfMsg'].forEach(id=>{
+      document.getElementById(id).value='';
+    });
 
-setTimeout(() => {
-window.location.href =
-`mailto:ashishlokhande0102@gmail.com?subject=${subject}&body=${body}`;
-}, 1000);
+  })
+  .catch(function(error){
 
-['cfName','cfEmail','cfMsg'].forEach(id=>document.getElementById(id).value='');
+    console.error(error);
+
+    el.textContent='❌ Failed to send message. Please try again.';
+    el.style.color='var(--danger)';
+    el.style.display='block';
+
+  });
 }
 
 
@@ -1168,6 +1178,15 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(d.dataset.color===D.accentColor)d.style.border='3px solid var(--ink)';
   });
 });
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script>
+(function () {
+  emailjs.init({
+    publicKey: "lDZjvlrI9gELhdMIh"
+  });
+})();
 </script>
 </body>
 </html>
