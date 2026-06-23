@@ -403,18 +403,26 @@ footer{text-align:center;padding:36px 32px;color:var(--ink2);font-size:.8rem;bor
 
 <!-- ADD PROJECT -->
 <div class="modal-overlay" id="projModal">
-  <div class="modal" style="max-width:580px">
+  <div class="modal" style="max-width:600px;width:100%">
     <h3 id="projModalTitle">Add New Project</h3>
-    <div class="form-group"><label>Title</label><input type="text" id="pmTitle" placeholder="e.g. Sales Dashboard"></div>
-    <div class="form-group"><label>Category / Badge</label><input type="text" id="pmBadge" placeholder="Power BI, Finance…"></div>
-    <div class="form-group"><label>Emoji Icon</label><input type="text" id="pmEmoji" placeholder="📊" maxlength="4" style="width:60px"></div>
-    <div class="form-group"><label>Tools / Tags (comma separated)</label><input type="text" id="pmTags" placeholder="Excel, Power BI, SQL"></div>
-    <div class="form-group"><label>Short Description</label><textarea id="pmDesc" style="min-height:72px" placeholder="Brief summary..."></textarea></div>
-    <div class="form-group"><label>Objective</label><textarea id="pmObj" style="min-height:60px" placeholder="Project objective..."></textarea></div>
-    <div class="form-group"><label>KPIs / Key Insights</label><textarea id="pmKpi" style="min-height:60px" placeholder="KPIs, insights, results..."></textarea></div>
+    <div class="form-group"><label>Title</label><textarea id="pmTitle" rows="2" style="resize:vertical;min-height:44px" placeholder="e.g. Sales Dashboard"></textarea></div>
+    <div class="form-group"><label>Category / Badge</label><textarea id="pmBadge" rows="1" style="resize:vertical;min-height:44px" placeholder="Power BI, Finance…"></textarea></div>
+    <div class="form-group"><label>Emoji Icon</label><input type="text" id="pmEmoji" placeholder="📊" style="width:70px"></div>
+    <div class="form-group"><label>Tools / Tags (comma separated)</label><textarea id="pmTags" rows="2" style="resize:vertical;min-height:44px" placeholder="Excel, Power BI, SQL"></textarea></div>
+    <div class="form-group"><label>Short Description</label><textarea id="pmDesc" style="resize:vertical;min-height:80px" placeholder="Brief summary..."></textarea></div>
+    <div class="form-group"><label>Objective</label><textarea id="pmObj" style="resize:vertical;min-height:80px" placeholder="Project objective..."></textarea></div>
+    <div class="form-group"><label>KPIs / Key Insights</label><textarea id="pmKpi" style="resize:vertical;min-height:80px" placeholder="KPIs, insights, results..."></textarea></div>
+    <div class="form-group">
+      <label>Mention Files (comma separated filenames or links)</label>
+      <textarea id="pmMentionFiles" rows="2" style="resize:vertical;min-height:44px" placeholder="e.g. Sales_Report.xlsx, dashboard.pbix, https://drive.google.com/..."></textarea>
+    </div>
     <div class="form-group">
       <label>Upload Project Files (PDF, Excel, PPTX, SQL, PowerBI, Tableau)</label>
       <input type="file" id="pmFiles" multiple accept=".pdf,.xlsx,.xls,.twbx,.sql,.pbix,.xlsm,.pptx,.ppt,.csv">
+      <div id="pmExistingFiles" style="display:none;margin-top:10px">
+        <p style="font-size:.74rem;font-weight:700;color:var(--ink2);font-family:var(--mono);text-transform:uppercase;margin-bottom:6px">Currently Attached Files</p>
+        <div id="pmExistingFileList" style="display:flex;flex-direction:column;gap:5px"></div>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal('projModal')">Cancel</button>
@@ -432,12 +440,16 @@ footer{text-align:center;padding:36px 32px;color:var(--ink2);font-size:.8rem;bor
     <div style="margin-bottom:14px"><p style="font-size:.74rem;font-weight:700;font-family:var(--mono);text-transform:uppercase;color:var(--ink2);margin-bottom:5px">Description</p><p id="pdDesc" style="font-size:.88rem;color:var(--ink2);line-height:1.7"></p></div>
     <div style="margin-bottom:14px"><p style="font-size:.74rem;font-weight:700;font-family:var(--mono);text-transform:uppercase;color:var(--ink2);margin-bottom:5px">Objective</p><p id="pdObj" style="font-size:.88rem;color:var(--ink2);line-height:1.7"></p></div>
     <div style="margin-bottom:14px"><p style="font-size:.74rem;font-weight:700;font-family:var(--mono);text-transform:uppercase;color:var(--ink2);margin-bottom:5px">KPIs / Insights</p><p id="pdKpi" style="font-size:.88rem;color:var(--ink2);line-height:1.7;white-space:pre-line"></p></div>
+    <div id="pdMentionFilesWrap" style="display:none;margin-bottom:14px">
+      <p style="font-size:.74rem;font-weight:700;font-family:var(--mono);text-transform:uppercase;color:var(--ink2);margin-bottom:5px">Mentioned Files</p>
+      <p id="pdMentionFiles" style="font-size:.88rem;color:var(--ink2);line-height:1.7;white-space:pre-line"></p>
+    </div>
     <div id="pdFilesWrap" style="display:none">
       <p style="font-size:.74rem;font-weight:700;font-family:var(--mono);text-transform:uppercase;color:var(--ink2);margin-bottom:8px">Project Files</p>
       <div id="pdFileList" style="display:flex;flex-direction:column;gap:6px"></div>
     </div>
     <div class="modal-actions">
-      <div id="pdEditBtns" style="display:none;gap:8px;display:none">
+      <div id="pdEditBtns" style="display:none;gap:8px">
         <button class="btn btn-outline" style="font-size:.8rem" onclick="editProject(currentProjId)">✏️ Edit</button>
         <button class="btn btn-danger" style="font-size:.8rem" onclick="deleteProject(currentProjId);closeModal('projDetailModal')">🗑️ Delete</button>
       </div>
@@ -937,10 +949,12 @@ function viewCert(id){
 // PROJECTS
 // ════════════════════════════════════════
 function resetProjForm(){
-  ['pmTitle','pmBadge','pmEmoji','pmTags','pmDesc','pmObj','pmKpi'].forEach(id=>{
+  ['pmTitle','pmBadge','pmEmoji','pmTags','pmDesc','pmObj','pmKpi','pmMentionFiles'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.value=id==='pmEmoji'?'📊':'';
   });
   document.getElementById('pmFiles').value='';
+  const ef=document.getElementById('pmExistingFiles');if(ef)ef.style.display='none';
+  document.getElementById('pmExistingFileList').innerHTML='';
   document.getElementById('projModalTitle').textContent='Add New Project';
 }
 function saveProject(){
@@ -955,6 +969,7 @@ function saveProject(){
     desc:document.getElementById('pmDesc').value.trim(),
     obj:document.getElementById('pmObj').value.trim(),
     kpi:document.getElementById('pmKpi').value.trim(),
+    mentionFiles:document.getElementById('pmMentionFiles').value.trim(),
     files:editingProjId?(D.projects.find(p=>p.id===editingProjId)||{}).files||[]:[]
   };
   const fileInput=document.getElementById('pmFiles');
@@ -993,7 +1008,41 @@ function editProject(id){
   document.getElementById('pmDesc').value=p.desc||'';
   document.getElementById('pmObj').value=p.obj||'';
   document.getElementById('pmKpi').value=p.kpi||'';
+  document.getElementById('pmMentionFiles').value=p.mentionFiles||'';
+  // Show existing uploaded files with delete option
+  const ef=document.getElementById('pmExistingFiles');
+  const efl=document.getElementById('pmExistingFileList');
+  if(p.files&&p.files.length){
+    efl.innerHTML=p.files.map((f,i)=>`
+      <div id="efile_${i}" style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--mist);border-radius:7px">
+        <span>📎</span>
+        <span style="flex:1;font-size:.82rem;font-weight:600;color:var(--ink)">${esc(f.name)}</span>
+        <button onclick="removeProjFile(${i})" style="padding:2px 8px;border-radius:5px;background:var(--danger);color:#fff;font-size:.72rem;border:none;cursor:pointer">✕ Remove</button>
+      </div>`).join('');
+    ef.style.display='block';
+  } else {
+    efl.innerHTML='';ef.style.display='none';
+  }
   closeModal('projDetailModal');openModal('projModal');
+}
+function removeProjFile(idx){
+  if(!editingProjId)return;
+  const p=D.projects.find(x=>x.id===editingProjId);if(!p)return;
+  p.files.splice(idx,1);
+  saveD();
+  // refresh existing files list
+  const efl=document.getElementById('pmExistingFileList');
+  const ef=document.getElementById('pmExistingFiles');
+  if(p.files.length){
+    efl.innerHTML=p.files.map((f,i)=>`
+      <div id="efile_${i}" style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--mist);border-radius:7px">
+        <span>📎</span>
+        <span style="flex:1;font-size:.82rem;font-weight:600;color:var(--ink)">${esc(f.name)}</span>
+        <button onclick="removeProjFile(${i})" style="padding:2px 8px;border-radius:5px;background:var(--danger);color:#fff;font-size:.72rem;border:none;cursor:pointer">✕ Remove</button>
+      </div>`).join('');
+  } else {
+    efl.innerHTML='';ef.style.display='none';
+  }
 }
 function openProjDetail(id){
   const p=D.projects.find(x=>x.id===id);if(!p)return;
@@ -1004,6 +1053,10 @@ function openProjDetail(id){
   document.getElementById('pdDesc').textContent=p.desc||'—';
   document.getElementById('pdObj').textContent=p.obj||'—';
   document.getElementById('pdKpi').textContent=p.kpi||'—';
+  const mfw=document.getElementById('pdMentionFilesWrap');
+  const mf=document.getElementById('pdMentionFiles');
+  if(p.mentionFiles&&p.mentionFiles.trim()){mf.textContent=p.mentionFiles;mfw.style.display='block';}
+  else{mfw.style.display='none';}
   const fw=document.getElementById('pdFilesWrap');
   const fl=document.getElementById('pdFileList');
   if(p.files&&p.files.length){
