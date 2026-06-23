@@ -615,8 +615,82 @@ const DEFAULT = {
   contact: {email:'ashish@email.com',phone:'+91 00000 00000',linkedin:'linkedin.com/in/ashishlokhande',location:'Pune, Maharashtra, India'}
 };
 
+// ════════════════════════════════════════
+// INDEXEDDB — file storage (no size limit)
+// ════════════════════════════════════════
+let idb=null;
+function openIDB(){
+  return new Promise((res,rej)=>{
+    if(idb)return res(idb);
+    const req=indexedDB.open('AL_files',1);
+    req.onupgradeneeded=e=>{
+      const db=e.target.result;
+      if(!db.objectStoreNames.contains('files'))db.createObjectStore('files');
+    };
+    req.onsuccess=e=>{idb=e.target.result;res(idb);};
+    req.onerror=e=>rej(e);
+  });
+}
+function idbSet(key,val){
+  return openIDB().then(db=>new Promise((res,rej)=>{
+    const tx=db.transaction('files','readwrite');
+    tx.objectStore('files').put(val,key);
+    tx.oncomplete=()=>res();
+    tx.onerror=e=>rej(e);
+  }));
+}
+function idbGet(key){
+  return openIDB().then(db=>new Promise((res,rej)=>{
+    const tx=db.transaction('files','readonly');
+    const req=tx.objectStore('files').get(key);
+    req.onsuccess=()=>res(req.result||[]);
+    req.onerror=e=>rej(e);
+  }));
+}
+function idbDelete(key){
+  return openIDB().then(db=>new Promise((res,rej)=>{
+    const tx=db.transaction('files','readwrite');
+    tx.objectStore('files').delete(key);
+    tx.oncomplete=()=>res();
+    tx.onerror=e=>rej(e);
+  }));
+}
+function idbGetAllKeys(){
+  return openIDB().then(db=>new Promise((res,rej)=>{
+    const tx=db.transaction('files','readonly');
+    const req=tx.objectStore('files').getAllKeys();
+    req.onsuccess=()=>res(req.result||[]);
+    req.onerror=e=>rej(e);
+  }));
+}
+
+// Save project files to IDB, returns promise
+async function saveProjFilesToIDB(){
+  const promises=D.projects.map(p=>idbSet('proj_'+p.id, p.files||[]));
+  await Promise.all(promises);
+}
+// Load project files from IDB back into D.projects
+async function loadProjFilesFromIDB(){
+  for(const p of D.projects){
+    try{ p.files=await idbGet('proj_'+p.id); }catch(e){ p.files=[]; }
+  }
+}
+
 function loadD(){try{const s=localStorage.getItem('AL_portfolio');return s?JSON.parse(s):JSON.parse(JSON.stringify(DEFAULT));}catch(e){return JSON.parse(JSON.stringify(DEFAULT));}}
-function saveD(){localStorage.setItem('AL_portfolio',JSON.stringify(D));}
+
+function saveD(){
+  try{
+    // Strip files before saving to localStorage (files go to IDB)
+    const slim=JSON.parse(JSON.stringify(D));
+    slim.projects=slim.projects.map(p=>({...p,files:[]}));
+    localStorage.setItem('AL_portfolio',JSON.stringify(slim));
+    return true;
+  }catch(e){
+    toast('❌ Save failed: '+e.message,true);
+    console.error('saveD error:',e);
+    return false;
+  }
+}
 let D = loadD();
 // Ensure all default arrays exist if upgrading
 if(!D.skills) D.skills = DEFAULT.skills;
@@ -672,8 +746,10 @@ function toggleAnalytics(){
 // ════════════════════════════════════════
 // RENDER
 // ════════════════════════════════════════
-function renderAll(){
+async function renderAll(){
   applyFont();applyAccent();
+  // Load all project files from IDB into D.projects
+  await loadProjFilesFromIDB().catch(()=>{});
   renderHero();renderSkills();renderCerts();renderProjects();renderExperience();renderContact();
 }
 function renderHero(){
@@ -864,7 +940,7 @@ function saveAll(){
     if(n)c.name=n.textContent.trim();
     if(o)c.org=o.textContent.trim();
   });
-  saveD();renderAll();toast('✅ All changes saved!');
+  if(saveD()){renderAll();toast('✅ All changes saved!');}else{renderAll();}
 }
 
 // ════════════════════════════════════════
@@ -977,6 +1053,11 @@ function saveProject(){
   if(newFiles.length===0){
     finishSaveProj(baseProj);return;
   }
+  // Files go to IndexedDB — no practical size limit
+  const totalSize=newFiles.reduce((s,f)=>s+f.size,0);
+  if(totalSize>100*1024*1024){
+    if(!confirm('Warning: Very large files selected ('+Math.round(totalSize/1024/1024)+' MB total). This may take a moment. Continue?'))return;
+  }
   let loaded=0;
   newFiles.forEach(file=>{
     const r=new FileReader();
@@ -985,20 +1066,32 @@ function saveProject(){
       loaded++;
       if(loaded===newFiles.length)finishSaveProj(baseProj);
     };
+    r.onerror=()=>{
+      toast('❌ Failed to read file: '+file.name,true);
+    };
     r.readAsDataURL(file);
   });
 }
-function finishSaveProj(proj){
+async function finishSaveProj(proj){
   if(editingProjId){const idx=D.projects.findIndex(p=>p.id===editingProjId);if(idx>-1)D.projects[idx]=proj;}
   else D.projects.push(proj);
-  editingProjId=null;saveD();renderProjects();closeModal('projModal');toast('✅ Project saved!');
+  editingProjId=null;
+  // Save files to IndexedDB (no size limit), metadata to localStorage
+  try{
+    await idbSet('proj_'+proj.id, proj.files||[]);
+  }catch(e){ console.error('IDB save error',e); }
+  if(saveD()){renderProjects();closeModal('projModal');toast('✅ Project saved!');}else{renderProjects();}
 }
 function deleteProject(id){
   if(!confirm('Delete this project?'))return;
-  D.projects=D.projects.filter(p=>p.id!==id);saveD();renderProjects();
+  D.projects=D.projects.filter(p=>p.id!==id);
+  idbDelete('proj_'+id).catch(()=>{});
+  saveD();renderProjects();
 }
-function editProject(id){
+async function editProject(id){
   const p=D.projects.find(x=>x.id===id);if(!p)return;
+  // Load latest files from IDB
+  try{ p.files=await idbGet('proj_'+id); }catch(e){ p.files=p.files||[]; }
   editingProjId=id;
   document.getElementById('projModalTitle').textContent='Edit Project';
   document.getElementById('pmTitle').value=p.title;
@@ -1029,6 +1122,7 @@ function removeProjFile(idx){
   if(!editingProjId)return;
   const p=D.projects.find(x=>x.id===editingProjId);if(!p)return;
   p.files.splice(idx,1);
+  idbSet('proj_'+editingProjId, p.files).catch(()=>{});
   saveD();
   // refresh existing files list
   const efl=document.getElementById('pmExistingFileList');
@@ -1044,8 +1138,10 @@ function removeProjFile(idx){
     efl.innerHTML='';ef.style.display='none';
   }
 }
-function openProjDetail(id){
+async function openProjDetail(id){
   const p=D.projects.find(x=>x.id===id);if(!p)return;
+  // Always load latest files from IDB
+  try{ p.files=await idbGet('proj_'+id); }catch(e){ p.files=p.files||[]; }
   currentProjId=id;
   document.getElementById('pdImg').innerHTML=`<span style="font-size:60px">${p.emoji||'📊'}</span>`;
   document.getElementById('pdTitle').textContent=p.title;
@@ -1187,7 +1283,18 @@ function getText(id){const el=document.getElementById(id);return el?el.textConte
 function setText(id,val){const el=document.getElementById(id);if(el&&val)el.textContent=val;}
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.opacity='1';setTimeout(()=>{t.style.opacity='0';},2500);}
+function toast(msg,isError){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=isError?'var(--danger)':'var(--success)';
+  t.style.opacity='1';
+  t.style.whiteSpace='normal';
+  t.style.maxWidth='90vw';
+  t.style.textAlign='center';
+  t.style.lineHeight='1.5';
+  clearTimeout(t._tid);
+  t._tid=setTimeout(()=>{t.style.opacity='0';t.style.whiteSpace='nowrap';t.style.maxWidth='';},isError?5000:2500);
+}
 
 // Close modals on backdrop click
 document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
@@ -1220,9 +1327,9 @@ self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>
 // ════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded',async ()=>{
   trackView();
-  renderAll();
+  await renderAll();
   // Restore font size setting in select
   const fss=document.getElementById('fontSizeSelect');
   if(fss)fss.value=D.fontSize||'16';
