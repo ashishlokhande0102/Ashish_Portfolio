@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ashish Lokhande – MIS & Data Analyst</title>
+<title>Ashish Lokhande – Accounting & Analyst</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ── TOKENS ── */
 :root{
-  
   --ink:#0D1117;--ink2:#3A3F4B;--mist:#F5F7FA;--border:#E2E6ED;
   --accent:#2563EB;--accent2:#7C3AED;--teal:#0EA5E9;
   --success:#10B981;--warn:#F59E0B;--danger:#EF4444;--white:#FFFFFF;
@@ -230,6 +229,7 @@ footer{text-align:center;padding:36px 32px;color:var(--ink2);font-size:.8rem;bor
   <button class="tbtn tbtn-white" onclick="openModal('resumeModal')">📄 Resume</button>
   <button class="tbtn tbtn-white" onclick="openModal('settingsModal')">⚙️ Settings</button>
   <button class="tbtn tbtn-save" onclick="saveAll()">💾 Save</button>
+  <button class="tbtn tbtn-white" style="background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.5)" onclick="exportHTML()">⬇️ Export & Update GitHub</button>
   <button class="tbtn tbtn-white" onclick="logoutOwner()">Exit</button>
 </div>
 
@@ -520,7 +520,7 @@ footer{text-align:center;padding:36px 32px;color:var(--ink2);font-size:.8rem;bor
 
 <!-- SETTINGS -->
 <div class="modal-overlay" id="settingsModal">
-  <div class="modal" id="settingsModal" style="max-width:440px">
+  <div class="modal" style="max-width:440px">
     <h3>⚙️ Settings</h3>
     <div class="form-group"><label>Change Password</label><input type="password" id="newPw1" placeholder="New password"></div>
     <div class="form-group"><label>Confirm Password</label><input type="password" id="newPw2" placeholder="Confirm new password"></div>
@@ -562,14 +562,19 @@ footer{text-align:center;padding:36px 32px;color:var(--ink2);font-size:.8rem;bor
 
 <script>
 // ════════════════════════════════════════
-// DATA
+// CONSTANTS & STATE
 // ════════════════════════════════════════
 const DEF_PASSWORD = 'Pass@123';
+const LS_KEY = 'AL_portfolio_v2';
+const LS_ANA = 'AL_analytics_v2';
 let isOwner = false;
 let analyticsOpen = false;
 let editingProjId = null;
 let currentProjId = null;
 
+// ════════════════════════════════════════
+// DEFAULT DATA  ← auto-updated by Export
+// ════════════════════════════════════════
 const DEFAULT = {
   password: DEF_PASSWORD,
   status: 'open',
@@ -617,131 +622,157 @@ const DEFAULT = {
 };
 
 // ════════════════════════════════════════
-// INDEXEDDB — file storage (no size limit)
+// INDEXEDDB — binary file storage (no size limit)
 // ════════════════════════════════════════
-let idb=null;
+let idb = null;
 function openIDB(){
   return new Promise((res,rej)=>{
-    if(idb)return res(idb);
-    const req=indexedDB.open('AL_files',1);
-    req.onupgradeneeded=e=>{
-      const db=e.target.result;
-      if(!db.objectStoreNames.contains('files'))db.createObjectStore('files');
-    };
-    req.onsuccess=e=>{idb=e.target.result;res(idb);};
-    req.onerror=e=>rej(e);
+    if(idb) return res(idb);
+    const req = indexedDB.open('AL_files',1);
+    req.onupgradeneeded = e => { const db=e.target.result; if(!db.objectStoreNames.contains('files')) db.createObjectStore('files'); };
+    req.onsuccess = e => { idb=e.target.result; res(idb); };
+    req.onerror   = e => rej(e);
   });
 }
-function idbSet(key,val){
-  return openIDB().then(db=>new Promise((res,rej)=>{
-    const tx=db.transaction('files','readwrite');
-    tx.objectStore('files').put(val,key);
-    tx.oncomplete=()=>res();
-    tx.onerror=e=>rej(e);
-  }));
-}
-function idbGet(key){
-  return openIDB().then(db=>new Promise((res,rej)=>{
-    const tx=db.transaction('files','readonly');
-    const req=tx.objectStore('files').get(key);
-    req.onsuccess=()=>res(req.result||[]);
-    req.onerror=e=>rej(e);
-  }));
-}
-function idbDelete(key){
-  return openIDB().then(db=>new Promise((res,rej)=>{
-    const tx=db.transaction('files','readwrite');
-    tx.objectStore('files').delete(key);
-    tx.oncomplete=()=>res();
-    tx.onerror=e=>rej(e);
-  }));
-}
-function idbGetAllKeys(){
-  return openIDB().then(db=>new Promise((res,rej)=>{
-    const tx=db.transaction('files','readonly');
-    const req=tx.objectStore('files').getAllKeys();
-    req.onsuccess=()=>res(req.result||[]);
-    req.onerror=e=>rej(e);
-  }));
-}
+function idbSet(key,val){ return openIDB().then(db=>new Promise((res,rej)=>{ const tx=db.transaction('files','readwrite'); tx.objectStore('files').put(val,key); tx.oncomplete=()=>res(); tx.onerror=e=>rej(e); })); }
+function idbGet(key){ return openIDB().then(db=>new Promise((res,rej)=>{ const tx=db.transaction('files','readonly'); const r=tx.objectStore('files').get(key); r.onsuccess=()=>res(r.result||[]); r.onerror=e=>rej(e); })); }
+function idbDelete(key){ return openIDB().then(db=>new Promise((res,rej)=>{ const tx=db.transaction('files','readwrite'); tx.objectStore('files').delete(key); tx.oncomplete=()=>res(); tx.onerror=e=>rej(e); })); }
 
-// Save project files to IDB, returns promise
-async function saveProjFilesToIDB(){
-  const promises=D.projects.map(p=>idbSet('proj_'+p.id, p.files||[]));
-  await Promise.all(promises);
-}
-// Load project files from IDB back into D.projects
 async function loadProjFilesFromIDB(){
   for(const p of D.projects){
-    try{ p.files=await idbGet('proj_'+p.id); }catch(e){ p.files=[]; }
+    try{ p.files = await idbGet('proj_'+p.id); } catch(e){ p.files=[]; }
   }
 }
 
-function loadD(){try{const s=localStorage.getItem('AL_portfolio');return s?JSON.parse(s):JSON.parse(JSON.stringify(DEFAULT));}catch(e){return JSON.parse(JSON.stringify(DEFAULT));}}
+// ════════════════════════════════════════
+// LOCALSTORAGE — text/metadata storage
+// ════════════════════════════════════════
+function lsGet(key){ try{ const v=localStorage.getItem(key); return v?JSON.parse(v):null; } catch(e){ return null; } }
+function lsSet(key,val){ try{ localStorage.setItem(key,JSON.stringify(val)); return true; } catch(e){ console.warn('localStorage full:',e); return false; } }
+
+// Strip base64 blobs from payload — those live in IDB only
+function makeSlim(src){
+  const s = JSON.parse(JSON.stringify(src));
+  s.projects = (s.projects||[]).map(p=>({...p,files:[]}));
+  if(s.avatar && s.avatar.startsWith('data:')) s.avatar = null;
+  s.certs = (s.certs||[]).map(c=>({...c, file: c.file&&c.file.startsWith('data:')?null:c.file}));
+  return s;
+}
+
+function loadD(){
+  const cached = lsGet(LS_KEY);
+  if(cached && cached.skills) return Object.assign(JSON.parse(JSON.stringify(DEFAULT)), cached);
+  return JSON.parse(JSON.stringify(DEFAULT));
+}
 
 function saveD(){
-  try{
-    // Strip files before saving to localStorage (files go to IDB)
-    const slim=JSON.parse(JSON.stringify(D));
-    slim.projects=slim.projects.map(p=>({...p,files:[]}));
-    localStorage.setItem('AL_portfolio',JSON.stringify(slim));
-    return true;
-  }catch(e){
-    toast('❌ Save failed: '+e.message,true);
-    console.error('saveD error:',e);
-    return false;
-  }
+  return lsSet(LS_KEY, makeSlim(D));
 }
+
 let D = loadD();
-// Ensure all default arrays exist if upgrading
-if(!D.skills) D.skills = DEFAULT.skills;
-if(!D.certs)  D.certs  = DEFAULT.certs;
-if(!D.projects) D.projects = DEFAULT.projects;
-if(!D.experience) D.experience = DEFAULT.experience;
-if(!D.contact) D.contact = DEFAULT.contact;
-if(!D.password) D.password = DEF_PASSWORD;
 
 // ════════════════════════════════════════
-// ANALYTICS
+// ANALYTICS — localStorage
 // ════════════════════════════════════════
-function getA(){try{return JSON.parse(localStorage.getItem('AL_analytics')||'{}');}catch(e){return {};}}
-function saveA(a){localStorage.setItem('AL_analytics',JSON.stringify(a));}
+function getA(){ return lsGet(LS_ANA) || {}; }
+function saveA(a){ lsSet(LS_ANA, a); }
+
 function trackView(){
-  const a=getA();
-  a.views=(a.views||0)+1;
-  let vid=localStorage.getItem('AL_vid')||null;
-  if(!vid){vid=Math.random().toString(36).slice(2);localStorage.setItem('AL_vid',vid);}
-  const vs=a.visitors||[];
-  if(!vs.includes(vid))vs.push(vid);
-  a.visitors=vs;
-  a.lastVisit=new Date().toLocaleString('en-IN');
+  const a = getA();
+  a.views = (a.views||0) + 1;
+  let vid = sessionStorage.getItem('AL_vid');
+  if(!vid){ vid=Math.random().toString(36).slice(2); sessionStorage.setItem('AL_vid',vid); }
+  const vs = a.visitors||[];
+  if(!vs.includes(vid)) vs.push(vid);
+  a.visitors = vs;
+  a.lastVisit = new Date().toLocaleString('en-IN');
   saveA(a);
 }
+
 function trackResumeDl(e){
-  const a=getA();a.downloads=(a.downloads||0)+1;saveA(a);
-  if(!D.resumeUrl){alert('Resume not uploaded yet. Please login as Owner and upload your resume.');e.preventDefault();}
+  const a = getA(); a.downloads=(a.downloads||0)+1; saveA(a);
+  if(!D.resumeUrl){ alert('Resume not uploaded yet. Please login as Owner and upload your resume.'); e.preventDefault(); }
 }
+
 function trackMsg(name,email,msg){
-  const a=getA();a.messages=(a.messages||0)+1;
-  const log=a.msgLog||[];
+  const a = getA();
+  a.messages = (a.messages||0)+1;
+  const log = a.msgLog||[];
   log.unshift({name,email,msg:msg.substring(0,120),date:new Date().toLocaleString('en-IN')});
-  a.msgLog=log.slice(0,30);saveA(a);
+  a.msgLog = log.slice(0,30);
+  saveA(a);
 }
+
 function toggleAnalytics(){
-  analyticsOpen=!analyticsOpen;
-  document.getElementById('analyticsDrawer').classList.toggle('open',analyticsOpen);
-  if(analyticsOpen){
-    const a=getA();
-    document.getElementById('aViews').textContent=a.views||0;
-    document.getElementById('aUniq').textContent=(a.visitors||[]).length;
-    document.getElementById('aDl').textContent=a.downloads||0;
-    document.getElementById('aMsgs').textContent=a.messages||0;
-    document.getElementById('aLast').textContent=a.lastVisit||'—';
-    const ml=document.getElementById('aMsgLog');ml.innerHTML='';
-    (a.msgLog||[]).slice(0,6).forEach(m=>{
-      ml.innerHTML+=`<div style="background:var(--mist);border-radius:7px;padding:8px 10px;font-size:.74rem"><strong>${esc(m.name)}</strong> <span style="color:var(--ink2)">${m.date}</span><p style="color:var(--ink2);margin-top:2px">${esc(m.msg)}</p></div>`;
-    });
-  }
+  analyticsOpen = !analyticsOpen;
+  document.getElementById('analyticsDrawer').classList.toggle('open', analyticsOpen);
+  if(!analyticsOpen) return;
+  const a = getA();
+  document.getElementById('aViews').textContent = a.views||0;
+  document.getElementById('aUniq').textContent  = (a.visitors||[]).length;
+  document.getElementById('aDl').textContent    = a.downloads||0;
+  document.getElementById('aMsgs').textContent  = a.messages||0;
+  document.getElementById('aLast').textContent  = a.lastVisit||'—';
+  const ml = document.getElementById('aMsgLog');
+  ml.innerHTML='';
+  (a.msgLog||[]).slice(0,6).forEach(m=>{
+    ml.innerHTML+=`<div style="background:var(--mist);border-radius:7px;padding:8px 10px;font-size:.74rem">
+      <strong>${esc(m.name)}</strong><span style="color:var(--ink2);margin-left:6px">${m.date}</span>
+      <p style="color:var(--ink2);margin-top:2px">${esc(m.msg)}</p></div>`;
+  });
+}
+
+// ════════════════════════════════════════
+// EXPORT HTML — bakes D into source & downloads
+// Upload the downloaded file to GitHub → visitors see updates instantly
+// ════════════════════════════════════════
+async function exportHTML(){
+  toast('⏳ Preparing export…');
+
+  // Pull latest edits from DOM first (same as saveAll)
+  D.heroName=getText('heroName'); D.heroTitle=getText('heroTitle');
+  D.heroSubtitle=getText('heroSubtitle'); D.heroIntro=getText('heroIntro');
+  D.statExp=getText('statExp'); D.statProj=getText('statProj'); D.statTools=getText('statTools');
+  D.aboutP1=getText('aboutP1'); D.aboutP2=getText('aboutP2'); D.aboutP3=getText('aboutP3');
+  D.footerText=getText('footerText');
+  D.contact.email=getText('cEmail')||D.contact.email;
+  D.contact.phone=getText('cPhone')||D.contact.phone;
+  D.contact.linkedin=getText('cLinkedin')||D.contact.linkedin;
+  D.contact.location=getText('cLocation')||D.contact.location;
+  D.certs.forEach(c=>{
+    const n=document.getElementById('cn_'+c.id); const o=document.getElementById('co_'+c.id);
+    if(n) c.name=n.textContent.trim(); if(o) c.org=o.textContent.trim();
+  });
+  saveD();
+
+  // Load full project files from IDB so they're embedded in export
+  await loadProjFilesFromIDB().catch(()=>{});
+
+  // Build the export payload — include avatar & cert files inline
+  const exportD = JSON.parse(JSON.stringify(D));
+  // Keep files as-is (they will be embedded in DEFAULT as base64)
+
+  // Get current HTML source
+  let src = document.documentElement.outerHTML;
+
+  // Replace the DEFAULT object in source with current data
+  // We target the marker comment so the replacement is precise
+  const newDefault = `const DEFAULT = ${JSON.stringify(exportD, null, 2)};`;
+
+  // Use a sentinel marker approach: replace from "const DEFAULT = {" to matching closing "};"
+  src = src.replace(
+    /\/\/ DEFAULT DATA[\s\S]*?const DEFAULT = \{[\s\S]*?\n\};/,
+    `// DEFAULT DATA  ← auto-updated by Export\n${newDefault}`
+  );
+
+  const blob = new Blob([src], {type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+
+  toast('✅ Downloaded! Upload index.html to GitHub to update your visitor link.');
 }
 
 // ════════════════════════════════════════
@@ -941,7 +972,7 @@ function saveAll(){
     if(n)c.name=n.textContent.trim();
     if(o)c.org=o.textContent.trim();
   });
-  if(saveD()){renderAll();toast('✅ All changes saved!');}else{renderAll();}
+  if(saveD()){ renderAll(); toast('✅ All changes saved!'); } else { renderAll(); toast('⚠️ Save failed – storage full?', true); }
 }
 
 // ════════════════════════════════════════
@@ -1081,7 +1112,7 @@ async function finishSaveProj(proj){
   try{
     await idbSet('proj_'+proj.id, proj.files||[]);
   }catch(e){ console.error('IDB save error',e); }
-  if(saveD()){renderProjects();closeModal('projModal');toast('✅ Project saved!');}else{renderProjects();}
+  if(saveD()){ renderProjects(); closeModal('projModal'); toast('✅ Project saved!'); } else { renderProjects(); }
 }
 function deleteProject(id){
   if(!confirm('Delete this project?'))return;
@@ -1328,15 +1359,13 @@ self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>
 // ════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════
-document.addEventListener('DOMContentLoaded',async ()=>{
+document.addEventListener('DOMContentLoaded', async () => {
   trackView();
   await renderAll();
-  // Restore font size setting in select
-  const fss=document.getElementById('fontSizeSelect');
-  if(fss)fss.value=D.fontSize||'16';
-  // Restore accent color ring
+  const fss = document.getElementById('fontSizeSelect');
+  if(fss) fss.value = D.fontSize||'16';
   document.querySelectorAll('#colorPicker div').forEach(d=>{
-    if(d.dataset.color===D.accentColor)d.style.border='3px solid var(--ink)';
+    if(d.dataset.color===D.accentColor) d.style.border='3px solid var(--ink)';
   });
 });
 </script>
